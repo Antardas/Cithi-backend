@@ -1,19 +1,39 @@
 {
-  "name": "magic-chat",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.18.2",
-    "typescript": "^5.1.6"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.17"
-  }
+	"name": "magic-chat",
+	"version": "1.0.0",
+	"description": "",
+	"main": "app.js",
+	"scripts": {
+		"dev": "nodemon -r tsconfig-paths/register src/app.ts",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@socket.io/redis-adapter": "^8.2.1",
+		"compression": "^1.7.4",
+		"cookie-session": "^2.0.0",
+		"cors": "^2.8.5",
+		"dotenv": "^16.3.1",
+		"express": "^4.18.2",
+		"express-async-errors": "^3.1.1",
+		"helmet": "^7.0.0",
+		"hpp": "^0.2.3",
+		"http-status-codes": "^2.2.0",
+		"mongoose": "^7.4.1",
+		"redis": "^4.6.7",
+		"socket.io": "^4.7.1",
+		"typescript": "^5.1.6"
+	},
+	"devDependencies": {
+		"@types/compression": "^1.7.2",
+		"@types/cookie-session": "^2.0.44",
+		"@types/cors": "^2.8.13",
+		"@types/express": "^4.17.17",
+		"@types/hpp": "^0.2.2",
+		"nodemon": "^3.0.1",
+		"ts-node": "^10.9.1",
+		"tsconfig-paths": "^4.2.0"
+	}
 }

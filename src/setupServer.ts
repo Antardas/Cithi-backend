@@ -6,8 +6,21 @@ import {
 	Response,
 	NextFunction,
 } from 'express';
-import http from 'node:http';
+import http from 'http';
+import cors from 'cors';
+import helmet from 'helmet';
+import hpp from 'hpp';
+import cookieSession from 'cookie-session';
+import compression from 'compression';
+import HTTP_STATUS from 'http-status-codes';
+import 'express-async-errors';
+import { Server } from 'socket.io';
+import { createClient } from 'redis';
+import { createAdapter } from '@socket.io/redis-adapter';
+import { config } from './config';
+import applicationRoutes from './routes';
 
+const SERVER_PORT = 5000;
 export class ChattyServer {
 	private app: Application;
 	constructor(app: Application) {
@@ -15,24 +28,86 @@ export class ChattyServer {
 	}
 
 	public start(): void {
-		this.securityMiddleware(this.app)
-		this.standardMiddleware(this.app)
-		this.globalErrorHandler(this.app)
-		this.routeMiddleware(this.app)
-		this.startServer(this.app)
+		this.securityMiddleware(this.app);
+		this.standardMiddleware(this.app);
+		this.globalErrorHandler(this.app);
+		this.routeMiddleware(this.app);
+		this.startServer(this.app);
 	}
 
-	private securityMiddleware(app: Application): void {}
+	private securityMiddleware(app: Application): void {
+		app.use(
+			cookieSession({
+				name: 'session',
+				keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
+				maxAge: 7 * 24 * 60 * 60 * 1000,
+				secure: config.NODE_ENV !== 'development', //TODO: in production make sure it's true
+			})
+		);
+		// NOTE: know the use case
+		app.use(hpp());
+		app.use(helmet());
+		app.use(
+			cors({
+				origin: config.CLIENT_URL, // TODO: make it actual origin in production
+				credentials: true,
+				optionsSuccessStatus: 200,
+				methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+			})
+		);
+	}
 
-	private standardMiddleware(app: Application): void {}
+	private standardMiddleware(app: Application): void {
+		app.use(compression());
+		app.use(json({ limit: '50mb' }));
+		app.use(urlencoded({ extended: true, limit: '50mb' }));
+	}
 
-	private routeMiddleware(app: Application): void {}
+	private routeMiddleware(app: Application): void {
+		applicationRoutes(app);
+	}
 
 	private globalErrorHandler(app: Application): void {}
 
-	private startServer(app: Application): void {}
+	private async startServer(app: Application): Promise<void> {
+		try {
+			const httpServer: http.Server = new http.Server(app);
+			const socketIO: Server = await this.createSocketIO(httpServer);
+			this.startHttpServer(httpServer);
+			this.socketIOConnections(socketIO);
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
-	private createSocketIO(httpServer: http.Server): void {}
+	private async createSocketIO(httpServer: http.Server): Promise<Server> {
+		const io: Server = new Server(httpServer, {
+			cors: {
+				origin: config.CLIENT_URL,
+				methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+			},
+		});
 
-	private startHttpServer(httpServer: http.Server): void {}
+		const pubClient = createClient({
+			url: config.REDIS_HOST,
+		});
+
+		const subClient = pubClient.duplicate();
+
+		await Promise.all([pubClient.connect(), subClient.connect()]);
+
+		io.adapter(createAdapter(pubClient, subClient));
+
+		return io;
+	}
+
+	private startHttpServer(httpServer: http.Server): void {
+		console.log(`Server has started  with process ${process.pid}`);
+
+		httpServer.listen(SERVER_PORT, () => {
+			console.log(`Server Running on port port ${SERVER_PORT}`);
+		});
+	}
+
+	private socketIOConnections(io: Server): void {}
 }
