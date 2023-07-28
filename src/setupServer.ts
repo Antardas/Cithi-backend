@@ -1,11 +1,4 @@
-import {
-	Application,
-	json,
-	urlencoded,
-	Request,
-	Response,
-	NextFunction,
-} from 'express';
+import { Application, json, urlencoded, Request, Response, NextFunction } from 'express';
 import http from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -23,108 +16,107 @@ import { CustomError, IErrorResponse } from './shared/global/helpers/error-handl
 import Logger from 'bunyan';
 
 const SERVER_PORT = 5000;
-const log: Logger = config.createLogger('server')
+const log: Logger = config.createLogger('server');
 export class ChattyServer {
-	private app: Application;
-	constructor(app: Application) {
-		this.app = app;
-	}
+  private app: Application;
+  constructor(app: Application) {
+    this.app = app;
+  }
 
-	public start(): void {
-		this.securityMiddleware(this.app);
-		this.standardMiddleware(this.app);
-		this.globalErrorHandler(this.app);
-		this.routeMiddleware(this.app);
-		this.startServer(this.app);
-	}
+  public start(): void {
+    this.securityMiddleware(this.app);
+    this.standardMiddleware(this.app);
+    this.globalErrorHandler(this.app);
+    this.routeMiddleware(this.app);
+    this.startServer(this.app);
+  }
 
-	private securityMiddleware(app: Application): void {
-		app.use(
-			cookieSession({
-				name: 'session',
-				keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
-				maxAge: 7 * 24 * 60 * 60 * 1000,
-				secure: config.NODE_ENV !== 'development', //TODO: in production make sure it's true
-			})
-		);
-		// NOTE: know the use case
-		app.use(hpp());
-		app.use(helmet());
-		app.use(
-			cors({
-				origin: config.CLIENT_URL, // TODO: make it actual origin in production
-				credentials: true,
-				optionsSuccessStatus: 200,
-				methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-			})
-		);
-	}
+  private securityMiddleware(app: Application): void {
+    app.use(
+      cookieSession({
+        name: 'session',
+        keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: config.NODE_ENV !== 'development' //TODO: in production make sure it's true
+      })
+    );
+    // NOTE: know the use case
+    app.use(hpp());
+    app.use(helmet());
+    app.use(
+      cors({
+        origin: config.CLIENT_URL, // TODO: make it actual origin in production
+        credentials: true,
+        optionsSuccessStatus: 200,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+      })
+    );
+  }
 
-	private standardMiddleware(app: Application): void {
-		app.use(compression());
-		app.use(json({ limit: '50mb' }));
-		app.use(urlencoded({ extended: true, limit: '50mb' }));
-	}
+  private standardMiddleware(app: Application): void {
+    app.use(compression());
+    app.use(json({ limit: '50mb' }));
+    app.use(urlencoded({ extended: true, limit: '50mb' }));
+  }
 
-	private routeMiddleware(app: Application): void {
-		applicationRoutes(app);
-	}
+  private routeMiddleware(app: Application): void {
+    applicationRoutes(app);
+  }
 
-	private globalErrorHandler(app: Application): void {
-		// if route not found
-		app.all('*',async (req:Request, res: Response, next: NextFunction) => {
-			res.status(HTTP_STATUS.NOT_FOUND).json({message: `${req.originalUrl} not found`})
-		})
+  private globalErrorHandler(app: Application): void {
+    // if route not found
+    app.all('*', async (req: Request, res: Response) => {
+      res.status(HTTP_STATUS.NOT_FOUND).json({ message: `${req.originalUrl} not found` });
+    });
 
-		app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
-			log.error(error);
-			if (error instanceof CustomError) {
-				return res.status(error.statusCode).json(error.serializeError())
-			}
-			next()
-			
-		})
-	}
+    app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
+      log.error(error);
+      if (error instanceof CustomError) {
+        return res.status(error.statusCode).json(error.serializeError());
+      }
+      next();
+    });
+  }
 
-	private async startServer(app: Application): Promise<void> {
-		try {
-			const httpServer: http.Server = new http.Server(app);
-			const socketIO: Server = await this.createSocketIO(httpServer);
-			this.startHttpServer(httpServer);
-			this.socketIOConnections(socketIO);
-		} catch (error) {
-			log.error(error);
-		}
-	}
+  private async startServer(app: Application): Promise<void> {
+    try {
+      const httpServer: http.Server = new http.Server(app);
+      const socketIO: Server = await this.createSocketIO(httpServer);
+      this.startHttpServer(httpServer);
+      this.socketIOConnections(socketIO);
+    } catch (error) {
+      log.error(error);
+    }
+  }
 
-	private async createSocketIO(httpServer: http.Server): Promise<Server> {
-		const io: Server = new Server(httpServer, {
-			cors: {
-				origin: config.CLIENT_URL,
-				methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-			},
-		});
+  private async createSocketIO(httpServer: http.Server): Promise<Server> {
+    const io: Server = new Server(httpServer, {
+      cors: {
+        origin: config.CLIENT_URL,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+      }
+    });
 
-		const pubClient = createClient({
-			url: config.REDIS_HOST,
-		});
+    const pubClient = createClient({
+      url: config.REDIS_HOST
+    });
 
-		const subClient = pubClient.duplicate();
+    const subClient = pubClient.duplicate();
 
-		await Promise.all([pubClient.connect(), subClient.connect()]);
+    await Promise.all([pubClient.connect(), subClient.connect()]);
 
-		io.adapter(createAdapter(pubClient, subClient));
+    io.adapter(createAdapter(pubClient, subClient));
 
-		return io;
-	}
+    return io;
+  }
 
-	private startHttpServer(httpServer: http.Server): void {
-		log.info(`Server has started  with process ${process.pid}`);
+  private startHttpServer(httpServer: http.Server): void {
+    log.info(`Server has started  with process ${process.pid}`);
 
-		httpServer.listen(SERVER_PORT, () => {
-			log.info(`Server Running on port: ${SERVER_PORT}`);
-		});
-	}
+    httpServer.listen(SERVER_PORT, () => {
+      log.info(`Server Running on port: ${SERVER_PORT}`);
+    });
+  }
 
-	private socketIOConnections(io: Server): void {}
+  private socketIOConnections(_io: Server): void {}
 }
