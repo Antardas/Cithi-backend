@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "app.js",
 	"scripts": {
-		"dev": "nodemon -r tsconfig-paths/register src/app.ts",
+		"dev": "nodemon -r tsconfig-paths/register src/app.ts | npx bunyan",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],
@@ -12,6 +12,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"@socket.io/redis-adapter": "^8.2.1",
+		"bunyan": "^1.8.15",
 		"compression": "^1.7.4",
 		"cookie-session": "^2.0.0",
 		"cors": "^2.8.5",
@@ -27,6 +28,7 @@
 		"typescript": "^5.1.6"
 	},
 	"devDependencies": {
+		"@types/bunyan": "^1.8.8",
 		"@types/compression": "^1.7.2",
 		"@types/cookie-session": "^2.0.44",
 		"@types/cors": "^2.8.13",
