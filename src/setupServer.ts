@@ -10,10 +10,10 @@ import 'express-async-errors';
 import { Server } from 'socket.io';
 import { createClient } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
-import { config } from './config';
-import applicationRoutes from './routes';
-import { CustomError, IErrorResponse } from './shared/global/helpers/error-handler';
+import applicationRoutes from '@/root/routes';
 import Logger from 'bunyan';
+import { config } from '@/root/config';
+import { CustomError, IErrorResponse } from '@/global/helpers/error-handler';
 
 const SERVER_PORT = 5000;
 const log: Logger = config.createLogger('server');
@@ -118,5 +118,7 @@ export class ChattyServer {
     });
   }
 
-  private socketIOConnections(_io: Server): void {}
+  private socketIOConnections(_io: Server): void {
+    log.info('SocketIOConnections');
+  }
 }
