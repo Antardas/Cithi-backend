@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import cookieSession from 'cookie-session';
+import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import HTTP_STATUS from 'http-status-codes';
 import 'express-async-errors';
@@ -32,6 +33,7 @@ export class ChattyServer {
   }
 
   private securityMiddleware(app: Application): void {
+    app.use(cookieParser());
     app.use(
       cookieSession({
         name: 'session',

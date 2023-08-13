@@ -12,7 +12,7 @@ export abstract class BaseCache {
       url: config.REDIS_HOST
     });
     this.log = config.createLogger(cacheName);
-    this.cacheError( );
+    this.cacheError();
   }
 
   private cacheError(): void {

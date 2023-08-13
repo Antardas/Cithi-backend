@@ -1,4 +1,5 @@
 import { ServerError } from '@/global/helpers/error-handler';
+import { Helpers } from '@/global/helpers/helpers';
 import { config } from '@/root/config';
 import { BaseCache } from '@/service/redis/base.cache';
 import { IUserDocument } from '@/user/interfaces/user.interface';
@@ -17,10 +18,8 @@ export class UserCache extends BaseCache {
     const createdAt = new Date();
     const {
       _id,
-      authId,
       username,
       email,
-      password,
       avatarColor,
       uId,
       postsCount,
@@ -101,6 +100,36 @@ export class UserCache extends BaseCache {
       });
 
       await this.client.HSET(`users:${key}`, dataToSave);
+    } catch (error) {
+      log.error(error);
+      throw new ServerError('Server error. Try Again!!');
+    }
+  }
+
+  public async getUserFromCache(userId: string): Promise<IUserDocument | null> {
+    try {
+      if (!userId) {
+        throw new ServerError('userId not Provided');
+      }
+
+      if (!this.client.isOpen) {
+        await this.client.connect();
+      }
+
+      const response: IUserDocument = (await this.client.HGETALL(
+        `users:${userId}`
+      )) as unknown as IUserDocument;
+      console.log(response.social, 'reponse');
+
+      response.createdAt = new Date(Helpers.praseJson(`${response.createdAt}`));
+      response.postsCount = Helpers.praseJson(`${response.postsCount}`);
+      response.blocked = Helpers.praseJson(`${response.blocked}`);
+      response.blockedBy = Helpers.praseJson(`${response.blockedBy}`);
+      response.notifications = Helpers.praseJson(`${response.notifications}`);
+      response.social = Helpers.praseJson(String(response.social));
+      response.followersCount = Helpers.praseJson(`${response.followersCount}`);
+      response.followingCount = Helpers.praseJson(`${response.followingCount}`);
+      return response;
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try Again!!');

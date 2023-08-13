@@ -22,4 +22,13 @@ export class Helpers {
 
     return parseInt(results, 10);
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static praseJson(prop: string): any {
+    try {
+      return JSON.stringify(prop);
+    } catch (error) {
+      return prop;
+    }
+  }
 }

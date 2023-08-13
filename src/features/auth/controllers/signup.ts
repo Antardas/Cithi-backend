@@ -1,17 +1,22 @@
 import { ObjectId } from 'mongodb';
 import { Request, Response, NextFunction } from 'express';
+import { UploadApiResponse } from 'cloudinary';
+import HTTP_STATUS from 'http-status-codes';
+import { omit } from 'lodash';
+import JWT from 'jsonwebtoken';
+import { uploads } from '@/global/helpers/cloudinary-upload';
 import { joiValidation } from '@/global/decorators/joi-validation.decorator';
 import { signupSchema } from '@/auth/schema/signup';
 import { authService } from '@/service/db/auth.service';
 import { BadRequestError } from '@/global/helpers/error-handler';
 import { IAuthDocument, ISignUpData } from '@/auth/interfaces/auth.interface';
-import { Helpers } from '@/global/helpers/helpers';
-import { UploadApiErrorResponse, UploadApiResponse, UploadResponseCallback } from 'cloudinary';
-import { uploads } from '@/global/helpers/cloudinary-upload';
-import HTTP_STATUS from 'http-status-codes';
+import { authQueue } from '@/service/queues/auth.queue';
+import { userQueue } from '@/service/queues/user.queue';
 import { IUserDocument } from '@/user/interfaces/user.interface';
 import { UserCache } from '@/service/redis/user.cache';
 import { config } from '@/root/config';
+import { Helpers } from '@/global/helpers/helpers';
+import { CookieHandler } from '@/global/helpers/cookie-handler';
 
 const userCache: UserCache = new UserCache();
 export class SignUp {
@@ -55,7 +60,24 @@ export class SignUp {
       config.CLOUD_NAME
     }/image/upload/v${result.version}/${userObjectId.toString()}`;
     await userCache.saveUserToCache(`${userObjectId.toString()}`, uId, userDataForCache);
-    res.status(HTTP_STATUS.CREATED).json({ message: 'User Created Successfully', authData });
+
+    // Add To Database
+    omit(userDataForCache, ['uId', 'username', 'email', 'avatarColor']);
+    authQueue.addAuthUserJob('addAuthUserToDB', { value: authData });
+    userQueue.addUserJob('addUserToDB', { value: userDataForCache });
+    const token: string = SignUp.prototype.signToken(authData, userObjectId);
+
+    req.session = {
+      jwt: token
+    };
+
+    CookieHandler.setCookie(res, 'token', token, {
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    });
+
+    res
+      .status(HTTP_STATUS.CREATED)
+      .json({ message: 'User Created Successfully', user: userDataForCache, token: token });
   }
 
   private signupData(data: ISignUpData): IAuthDocument {
@@ -107,5 +129,18 @@ export class SignUp {
         youtube: ''
       }
     } as unknown as IUserDocument;
+  }
+
+  private signToken(data: IAuthDocument, userObjectId: ObjectId): string {
+    return JWT.sign(
+      {
+        userId: userObjectId,
+        uId: data.uId,
+        email: data.email,
+        username: data.username,
+        avatarColor: data.avatarColor
+      },
+      config.JWT_TOKEN!
+    );
   }
 }

@@ -28,9 +28,9 @@ const authSchema: Schema = new Schema(
 authSchema.pre('save', async function (this: IAuthDocument, next: () => void) {
   // if (this.isModified('password')) {
 
-    const hashedPassword: string = await hash(this.password as string, SALT_ROUND);
-    this.password = hashedPassword;
-    next();
+  const hashedPassword: string = await hash(this.password as string, SALT_ROUND);
+  this.password = hashedPassword;
+  next();
   // }
 });
 
