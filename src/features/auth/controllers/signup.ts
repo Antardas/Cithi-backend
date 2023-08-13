@@ -61,7 +61,7 @@ export class SignUp {
     }/image/upload/v${result.version}/${userObjectId.toString()}`;
     await userCache.saveUserToCache(`${userObjectId.toString()}`, uId, userDataForCache);
 
-    // Add To Database
+    // for adding to the Database, we are adding in queue and from the queue we our worker take this data and write (process) in database
     omit(userDataForCache, ['uId', 'username', 'email', 'avatarColor']);
     authQueue.addAuthUserJob('addAuthUserToDB', { value: authData });
     userQueue.addUserJob('addUserToDB', { value: userDataForCache });
