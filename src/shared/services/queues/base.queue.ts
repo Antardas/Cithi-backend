@@ -5,12 +5,12 @@ import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { ExpressAdapter } from '@bull-board/express';
 import { config } from '@/root/config';
 import { IAuthJob } from '@/auth/interfaces/auth.interface';
-import { IUserJob } from '@/user/interfaces/user.interface';
+import { IEmailJob, IUserJob } from '@/user/interfaces/user.interface';
 
 let bullAdapters: BullAdapter[] = [];
 
 export let serverAdapter: ExpressAdapter;
-type IBaseJobData = IUserJob | IAuthJob;
+type IBaseJobData = IUserJob | IAuthJob|IEmailJob;
 export abstract class BaseQueue {
   public queue: Queue.Queue;
   public log: Logger;
