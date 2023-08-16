@@ -7,14 +7,10 @@ import { authService } from '@/service/db/auth.service';
 import { signInSchema } from '@/auth/schema/signin';
 import { IAuthDocument } from '@/auth/interfaces/auth.interface';
 import { BadRequestError } from '@/global/helpers/error-handler';
-import { IResetPasswordParams, IUserDocument } from '@/user/interfaces/user.interface';
+import { IUserDocument } from '@/user/interfaces/user.interface';
 import { userService } from '@/service/db/user.service';
 import { CookieHandler } from '@/global/helpers/cookie-handler';
-import { forgotPasswordTemplate } from '@/service/emails/forgot-password/forgot-password-template';
-import { emailQueue } from '@/service/queues/email.queue';
-import moment from 'moment';
-import publicIP from 'ip';
-import { resetPasswordTemplate } from '@/service/emails/reset-password/reset-password-template';
+
 
 export class SignIn {
   @joiValidation(signInSchema)
@@ -55,20 +51,6 @@ export class SignIn {
       createdAt: existingUser.createdAt
     } as IUserDocument;
 
-    const templateParams: IResetPasswordParams = {
-      username: existingUser.username,
-      email: existingUser.email,
-      ipAddress: publicIP.address(),
-      date: moment().format('DD/MM/YYYY HH:mm')
-    };
-    const template: string = resetPasswordTemplate.renderResetConfirmationTemplate(templateParams);
-    // const template: string = forgotPasswordTemplate.renderForgotTemplate(user.username!, resetLink);
-    const resetLink: string = `${config.CLIENT_URL}/reset-password?token=fff2f2f9asd6f5s5fsf1s1f6s4fa6fas3`;
-    emailQueue.addEmailJob('forgetPasswordEmail', {
-      subject: 'Password Reset Confirmation',
-      template,
-      receiverEmail: 'emondaspeacock@gmail.com'
-    });
     res.status(HTTP_STATUS.OK).json({
       message: 'User logged in successfully',
       user: userDocument,
