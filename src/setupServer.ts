@@ -104,7 +104,13 @@ export class ChattyServer {
     });
 
     const subClient = pubClient.duplicate();
+    pubClient.on('error', (err) => {
+      log.error(err.message);
+    });
 
+    subClient.on('error', (err) => {
+      log.error(err.message);
+    });
     await Promise.all([pubClient.connect(), subClient.connect()]);
 
     io.adapter(createAdapter(pubClient, subClient));

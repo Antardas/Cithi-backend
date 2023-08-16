@@ -14,7 +14,7 @@ interface IMailOptions {
 const log: Logger = config.createLogger('Mail');
 
 class MailTransport {
-  public async sendEmail(recieverEmail: string, subject: string, body: string): Promise<void> {
+  public async sendEmail(receiverEmail: string, subject: string, body: string): Promise<void> {
     const transporter: nodemailer.Transporter = nodemailer.createTransport({
       host: config.BREVO_HOST,
       port: 587,
@@ -35,7 +35,7 @@ log.info('data of mail', {
 });
     const mailOptions: IMailOptions = {
       from: `Chithi App <${config.SENDER_EMAIL}>`,
-      to: recieverEmail,
+      to: receiverEmail,
       subject,
       html: body
     };
