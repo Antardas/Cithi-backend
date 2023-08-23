@@ -15,8 +15,6 @@ import { CookieHandler } from '@/global/helpers/cookie-handler';
 export class SignIn {
   @joiValidation(signInSchema)
   public async read(req: Request, res: Response, _next: NextFunction): Promise<void> {
-    console.log(req.session, req.sessionOptions);
-    console.log(req.cookies);
 
     const { username, password } = req.body;
     const existingUser: IAuthDocument = await authService.getAuthUserByUsername(username);
@@ -36,7 +34,7 @@ export class SignIn {
     req.session = {
       jwt: token
     };
-    console.log(req.session, req.sessionOptions);
+    // console.log(req.session, req.sessionOptions);
     CookieHandler.setCookie(res, 'token', token, {
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
     });
