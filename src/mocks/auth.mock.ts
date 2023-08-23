@@ -15,6 +15,7 @@ export const authMockRequest = (
 
 export const authMockResponse = (): Response => {
   const res: Response = {} as Response;
+  res.cookie = jest.fn().mockReturnValue(res);
   res.status = jest.fn().mockReturnValue(res);
   res.json = jest.fn().mockReturnValue(res);
   return res;
@@ -61,9 +62,10 @@ export const authUserPayload: AuthPayload = {
 
 export const authMock = {
   _id: '60263f14648fed5246e322d3',
+  authId: '60263f14648fed5246e322d3',
   uId: '1621613119252066',
-  username: 'Manny',
-  email: 'manny@me.com',
+  username: 'Devant',
+  email: 'dev.antardas@gmail.com',
   avatarColor: '#9c27b0',
   createdAt: '2022-08-31T07:42:24.451Z',
   save: () => {},
