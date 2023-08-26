@@ -160,14 +160,10 @@ describe('SignIn', () => {
 
     const res: Response = authMockResponse();
     const next: NextFunction = {} as NextFunction;
-    jest
-      .spyOn(authService, 'getAuthUserByUsername')
-      .mockResolvedValueOnce(null as unknown as IAuthDocument);
+    jest.spyOn(authService, 'getAuthUserByUsername').mockResolvedValueOnce(null as unknown as IAuthDocument);
 
     SignIn.prototype.read(req, res, next).catch((error: CustomError) => {
-      expect(authService.getAuthUserByUsername).toHaveBeenCalledWith(
-        Helpers.firstLatterUpperCase(req.body.username)
-      );
+      expect(authService.getAuthUserByUsername).toHaveBeenCalledWith(Helpers.firstLatterUpperCase(req.body.username));
 
       expect(error.serializeError().message).toEqual('username and password wrong');
       expect(error.serializeError().statusCode).toEqual(400);
@@ -196,9 +192,7 @@ describe('SignIn', () => {
     jest.spyOn(authService, 'getAuthUserByUsername').mockResolvedValueOnce(mockAuthUser);
 
     SignIn.prototype.read(req, res, next).catch((error: CustomError) => {
-      expect(authService.getAuthUserByUsername).toHaveBeenCalledWith(
-        Helpers.firstLatterUpperCase(req.body.username)
-      );
+      expect(authService.getAuthUserByUsername).toHaveBeenCalledWith(Helpers.firstLatterUpperCase(req.body.username));
 
       expect(mockAuthUser.comparePassword).toHaveBeenCalledWith(req.body.password);
 
@@ -209,12 +203,7 @@ describe('SignIn', () => {
 
   it('should set cookies data for valid credentials and send correct JSON response', async () => {
     // Prepare mock request, response, and next function
-    const req: Request = authMockRequest(
-      {},
-      { username: USERNAME, password: PASSWORD },
-      null,
-      {}
-    ) as Request;
+    const req: Request = authMockRequest({}, { username: USERNAME, password: PASSWORD }, null, {}) as Request;
     const res: Response = authMockResponse();
     const next: NextFunction = {} as NextFunction;
 
@@ -225,9 +214,7 @@ describe('SignIn', () => {
     jest.spyOn(authMock, 'comparePassword').mockResolvedValueOnce(true);
 
     // Mock the behavior of userService.getUserByAuthId
-    jest
-      .spyOn(userService, 'getUserByAuthId')
-      .mockResolvedValueOnce({ _id: '60263f14648fed5246e322d3' } as unknown as IUserDocument);
+    jest.spyOn(userService, 'getUserByAuthId').mockResolvedValueOnce({ _id: '60263f14648fed5246e322d3' } as unknown as IUserDocument);
 
     // Call the read method of SignIn class
     await SignIn.prototype.read(req, res, next);

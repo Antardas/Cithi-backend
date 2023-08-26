@@ -302,9 +302,7 @@ describe('SignUp', () => {
     const res: Response = authMockResponse();
     const next: NextFunction = {} as NextFunction;
 
-    jest
-      .spyOn(authService, 'getUserByUsernameOrEmail')
-      .mockResolvedValue(null as unknown as IAuthDocument);
+    jest.spyOn(authService, 'getUserByUsernameOrEmail').mockResolvedValue(null as unknown as IAuthDocument);
     const userSpy = jest.spyOn(UserCache.prototype, 'saveUserToCache');
     const cookieSpy = jest.spyOn(res, 'cookie');
     jest.spyOn(cloudinaryUploads, 'uploads').mockImplementation(
