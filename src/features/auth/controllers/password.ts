@@ -28,11 +28,7 @@ export class Password {
     const randomBytes: Buffer = await Promise.resolve(crypto.randomBytes(20));
     const randomCharacter: string = randomBytes.toString('hex');
 
-    await authService.updatePasswordToken(
-      `${user._id}`,
-      randomCharacter,
-      Date.now() + 60 * 60 * 1000
-    );
+    await authService.updatePasswordToken(`${user._id}`, randomCharacter, Date.now() + 60 * 60 * 1000);
 
     // const template: string = forgotPasswordTemplate.renderForgotTemplate(user.username!, resetLink);
     const resetLink: string = `${config.CLIENT_URL}/reset-password?token=${randomCharacter}`;
@@ -74,9 +70,7 @@ export class Password {
       ipAddress: publicIP.address(),
       date: moment().format('DD/MM/YYYY HH:mm')
     };
-    const template: string = resetPasswordTemplate.renderResetConfirmationTemplate(
-      passwordResetTemplateParams
-    );
+    const template: string = resetPasswordTemplate.renderResetConfirmationTemplate(passwordResetTemplateParams);
 
     emailQueue.addEmailJob('forgetPasswordEmail', {
       subject: 'Reset Password Successfully',

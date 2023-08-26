@@ -105,7 +105,9 @@ describe('Password', () => {
     });
 
     it('should send correct json response after update password', async () => {
-      const req: Request = authMockRequest({}, { password: '123456', confirmPassword: '123456' }, null, {token: 'wMwUBff5546s54sf4SWdKsf'}) as Request;
+      const req: Request = authMockRequest({}, { password: '123456', confirmPassword: '123456' }, null, {
+        token: 'wMwUBff5546s54sf4SWdKsf'
+      }) as Request;
       const res: Response = authMockResponse();
       jest.spyOn(authService, 'getAuthUserByPasswordToken').mockResolvedValue(authMock);
       jest.spyOn(emailQueue, 'addEmailJob');

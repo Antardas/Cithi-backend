@@ -1,5 +1,4 @@
 import nodemailer from 'nodemailer';
-import Mail from 'nodemailer/lib/mailer';
 import Logger from 'bunyan';
 import { config } from '@/root/config';
 import { BadRequestError } from '@/global/helpers/error-handler';
@@ -24,15 +23,15 @@ class MailTransport {
         pass: config.SENDER_EMAIL_PASSWORD // generated ethereal password
       }
     });
-log.info('data of mail', {
-  host: config.BREVO_HOST,
-  port: 587,
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: config.SENDER_EMAIL, // generated ethereal user
-    pass: config.SENDER_EMAIL_PASSWORD // generated ethereal password
-  }
-});
+    log.info('data of mail', {
+      host: config.BREVO_HOST,
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: config.SENDER_EMAIL, // generated ethereal user
+        pass: config.SENDER_EMAIL_PASSWORD // generated ethereal password
+      }
+    });
     const mailOptions: IMailOptions = {
       from: `Chithi App <${config.SENDER_EMAIL}>`,
       to: receiverEmail,

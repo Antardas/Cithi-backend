@@ -10,11 +10,7 @@ class CurrentUserRoutes {
   }
 
   public routes(): Router {
-    this.router.get(
-      '/current-user',
-      authMiddleware.checkAuthentication,
-      CurrentUser.prototype.read
-    );
+    this.router.get('/current-user', authMiddleware.checkAuthentication, CurrentUser.prototype.read);
     return this.router;
   }
 }

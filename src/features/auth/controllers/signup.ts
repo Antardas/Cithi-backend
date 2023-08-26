@@ -23,10 +23,7 @@ export class SignUp {
   @joiValidation(signupSchema)
   public async create(req: Request, res: Response, _next: NextFunction) {
     const { username, email, password, avatarColor, avatarImage } = req.body;
-    const checkIfUserExist: IAuthDocument = await authService.getUserByUsernameOrEmail(
-      username,
-      email
-    );
+    const checkIfUserExist: IAuthDocument = await authService.getUserByUsernameOrEmail(username, email);
     if (checkIfUserExist) {
       throw new BadRequestError('Invalid Credentials');
     }
@@ -43,12 +40,7 @@ export class SignUp {
       password
     });
 
-    const result: UploadApiResponse = (await uploads(
-      avatarImage,
-      userObjectId.toString(),
-      true,
-      true
-    )) as UploadApiResponse;
+    const result: UploadApiResponse = (await uploads(avatarImage, userObjectId.toString(), true, true)) as UploadApiResponse;
     if (!result?.public_id) {
       throw new BadRequestError('File Upload: Error Occurred. Try Again...');
     }
@@ -56,9 +48,7 @@ export class SignUp {
     // Add to redis cache
     const userDataForCache: IUserDocument = SignUp.prototype.userData(authData, userObjectId);
 
-    userDataForCache.profilePicture = `https://res.cloudinary.com/${
-      config.CLOUD_NAME
-    }/image/upload/v${result.version}/${userObjectId.toString()}`;
+    userDataForCache.profilePicture = `https://res.cloudinary.com/${config.CLOUD_NAME}/image/upload/v${result.version}/${userObjectId.toString()}`;
     await userCache.saveUserToCache(`${userObjectId.toString()}`, uId, userDataForCache);
 
     // for adding to the Database, we are adding in queue and from the queue we our worker take this data and write (process) in database
@@ -75,9 +65,7 @@ export class SignUp {
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
     });
 
-    res
-      .status(HTTP_STATUS.CREATED)
-      .json({ message: 'User Created Successfully', user: userDataForCache, token: token });
+    res.status(HTTP_STATUS.CREATED).json({ message: 'User Created Successfully', user: userDataForCache, token: token });
   }
 
   private signupData(data: ISignUpData): IAuthDocument {

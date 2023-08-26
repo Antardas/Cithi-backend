@@ -10,7 +10,7 @@ import { IEmailJob, IUserJob } from '@/user/interfaces/user.interface';
 let bullAdapters: BullAdapter[] = [];
 
 export let serverAdapter: ExpressAdapter;
-type IBaseJobData = IUserJob | IAuthJob|IEmailJob;
+type IBaseJobData = IUserJob | IAuthJob | IEmailJob;
 export abstract class BaseQueue {
   public queue: Queue.Queue;
   public log: Logger;
@@ -50,11 +50,7 @@ export abstract class BaseQueue {
     });
   }
 
-  protected processJob(
-    name: string,
-    concurrency: number,
-    callback: Queue.ProcessCallbackFunction<void>
-  ): void {
+  protected processJob(name: string, concurrency: number, callback: Queue.ProcessCallbackFunction<void>): void {
     this.queue.process(name, concurrency, callback);
   }
 }

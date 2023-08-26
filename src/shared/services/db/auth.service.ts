@@ -7,11 +7,7 @@ class AuthService {
     await AuthModel.create(data);
   }
 
-  public async updatePasswordToken(
-    authId: string,
-    token: string,
-    tokenExpiration: number
-  ): Promise<void> {
+  public async updatePasswordToken(authId: string, token: string, tokenExpiration: number): Promise<void> {
     await AuthModel.updateOne(
       {
         _id: authId

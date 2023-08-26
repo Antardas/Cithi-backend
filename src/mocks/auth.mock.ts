@@ -1,12 +1,7 @@
 import { AuthPayload, IAuthDocument } from '@/auth/interfaces/auth.interface';
 import { Response } from 'express';
 
-export const authMockRequest = (
-  cookieData: IJWT,
-  body: IAuthMock,
-  currentUser: AuthPayload | null,
-  params: unknown
-) => ({
+export const authMockRequest = (cookieData: IJWT, body: IAuthMock, currentUser: AuthPayload | null, params: unknown) => ({
   cookies: cookieData,
   body,
   params,

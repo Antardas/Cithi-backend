@@ -11,11 +11,9 @@ import { IUserDocument } from '@/user/interfaces/user.interface';
 import { userService } from '@/service/db/user.service';
 import { CookieHandler } from '@/global/helpers/cookie-handler';
 
-
 export class SignIn {
   @joiValidation(signInSchema)
   public async read(req: Request, res: Response, _next: NextFunction): Promise<void> {
-
     const { username, password } = req.body;
     const existingUser: IAuthDocument = await authService.getAuthUserByUsername(username);
     if (!existingUser) {

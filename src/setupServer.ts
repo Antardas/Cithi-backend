@@ -47,7 +47,7 @@ export class ChattyServer {
     app.use(helmet());
     app.use(
       cors({
-        origin: [config.CLIENT_URL, '*']as string[], // TODO: make it actual origin in production
+        origin: [config.CLIENT_URL, '*'] as string[], // TODO: make it actual origin in production
         credentials: true,
         optionsSuccessStatus: 200,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']

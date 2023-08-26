@@ -10,11 +10,7 @@ export class UserCache extends BaseCache {
     super('UserCache');
   }
 
-  public async saveUserToCache(
-    key: string,
-    userUId: string,
-    createdUser: IUserDocument
-  ): Promise<void> {
+  public async saveUserToCache(key: string, userUId: string, createdUser: IUserDocument): Promise<void> {
     const createdAt = new Date();
     const {
       _id,
@@ -116,9 +112,7 @@ export class UserCache extends BaseCache {
         await this.client.connect();
       }
 
-      const response: IUserDocument = (await this.client.HGETALL(
-        `users:${userId}`
-      )) as unknown as IUserDocument;
+      const response: IUserDocument = (await this.client.HGETALL(`users:${userId}`)) as unknown as IUserDocument;
       console.log(response.social, 'reponse');
 
       response.createdAt = new Date(Helpers.praseJson(`${response.createdAt}`));
