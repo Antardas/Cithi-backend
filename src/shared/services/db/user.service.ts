@@ -1,5 +1,5 @@
 import { IUserDocument } from '@/user/interfaces/user.interface';
-import { UserModel } from '@/user/models/user.schema';
+import { UserModel } from '@/user/models/user.model';
 import mongoose from 'mongoose';
 
 class UserService {
