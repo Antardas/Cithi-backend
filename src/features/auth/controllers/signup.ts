@@ -11,7 +11,7 @@ import { authService } from '@/service/db/auth.service';
 import { BadRequestError } from '@/global/helpers/error-handler';
 import { IAuthDocument, ISignUpData } from '@/auth/interfaces/auth.interface';
 import { authQueue } from '@/service/queues/auth.queue';
-import { userQueue } from '@/service/queues/user.queue';
+import { ADD_USER_TO_DB, userQueue } from '@/service/queues/user.queue';
 import { IUserDocument } from '@/user/interfaces/user.interface';
 import { UserCache } from '@/service/redis/user.cache';
 import { config } from '@/root/config';
@@ -54,7 +54,7 @@ export class SignUp {
     // for adding to the Database, we are adding in queue and from the queue we our worker take this data and write (process) in database
     omit(userDataForCache, ['uId', 'username', 'email', 'avatarColor']);
     authQueue.addAuthUserJob('addAuthUserToDB', { value: authData });
-    userQueue.addUserJob('addUserToDB', { value: userDataForCache });
+    userQueue.addUserJob(ADD_USER_TO_DB, { value: userDataForCache });
     const token: string = SignUp.prototype.signToken(authData, userObjectId);
 
     req.session = {

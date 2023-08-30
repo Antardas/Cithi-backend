@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 interface IReaction {
   like: number;
   love: number;
-  haha: number;
+  happy: number;
   sad: number;
   wow: number;
   angry: number;
@@ -15,6 +15,7 @@ export interface IPostDocument extends Document {
   _id?: string | mongoose.Types.ObjectId;
   userId: string;
   username: string;
+  email: string;
   avatarColor: string;
   profilePicture: string;
   post: string;
@@ -40,14 +41,14 @@ export interface IPostSaveToCache {
   key: ObjectId | string;
   currentUserId: string;
   uId: string;
-  createPost: IPostDocument;
+  createdPost: IPostDocument;
 }
 
-export interface IPostJobData {
+export interface IPostJob {
   key?: ObjectId | string;
   value?: IPostDocument;
-  keyOne: string,
-  keyTwo: string,
+  keyOne?: string;
+  keyTwo?: string;
 }
 
 export interface IQueryComplete {
