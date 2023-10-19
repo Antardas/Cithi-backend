@@ -2,7 +2,7 @@ import mongoose, { Document } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
 // TODO: Move this to the reaction interface later
-interface IReaction {
+export interface IReaction {
   like: number;
   love: number;
   happy: number;
