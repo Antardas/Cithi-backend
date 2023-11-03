@@ -26,9 +26,10 @@ export class Helpers {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static praseJson(prop: string): any {
     try {
-      return JSON.stringify(prop);
+      JSON.parse(prop);
     } catch (error) {
       return prop;
     }
+    return JSON.parse(prop);
   }
 }
