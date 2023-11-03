@@ -74,7 +74,24 @@ export class PostCache extends BaseCache {
       `${createAt}`
     ];
 
-    const dataToSave: Array<string> = [...firstList, ...secondList];
+    const dataToSave = {
+      _id: `${_id}`,
+      userId: `${userId}`,
+      username: `${username}`,
+      email: `${email}`,
+      avatarColor: `${avatarColor}`,
+      profilePicture: `${profilePicture}`,
+      post: `${post}`,
+      bgColor: `${bgColor}`,
+      feelings: `${feelings}`,
+      privacy: `${privacy}`,
+      gifUrl: `${gifUrl}`,
+      commentCount: `${commentCount}`,
+      reactions: `${JSON.stringify(reactions)}`,
+      imgVersion: `${imgVersion}`,
+      imgId: `${imgId}`,
+      createAt: `${createAt}`
+    };
     try {
       if (!this.client.isOpen) {
         await this.client.connect();
@@ -227,6 +244,45 @@ export class PostCache extends BaseCache {
       const count: number = parseInt(postCount[0], 10) - 1;
       multi.HSET(`users:${currentUserId}`, ['postsCount', count]);
       await multi.exec();
+    } catch (error) {
+      log.error(error);
+      throw new ServerError('Server error. Try Again!!');
+    }
+  }
+
+  public async updatePostInCache(key: string, updatedPost: IPostDocument): Promise<IPostDocument> {
+    const { post, bgColor, feelings, privacy, gifUrl, imgId, imgVersion, profilePicture } = updatedPost;
+
+    const firstList: string[] = [
+      'post',
+      `${post}`,
+      'bgColor',
+      `${bgColor}`,
+      'feelings',
+      `${feelings}`,
+      'privacy',
+      `${privacy}`,
+      'gifUrl',
+      `${gifUrl}`
+    ];
+
+    const secondList: string[] = ['profilePicture', `${profilePicture}`, 'imgId', `${imgId}`, 'imgVersion', `${imgVersion}`];
+    const dataToSave: string[] = [...firstList, ...secondList];
+
+    try {
+      if (!this.client.isOpen) {
+        await this.client.connect();
+      }
+
+      await this.client.HSET(`post:${key}`, dataToSave);
+      const multi: ReturnType<typeof this.client.multi> = this.client.multi();
+      multi.HGETALL(`post:${key}`);
+      const reply: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
+      const post = reply as IPostDocument[];
+      post[0].commentCount = Helpers.praseJson(`${post[0].commentCount}`) as number;
+      post[0].reactions = Helpers.praseJson(`${post[0].reactions}`) as IReaction;
+      post[0].createAt = new Date(Helpers.praseJson(`${post[0].createAt}`));
+      return post[0];
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try Again!!');
