@@ -7,7 +7,6 @@ import { AuthPayload } from '@/auth/interfaces/auth.interface';
 class AuthMiddleware {
   public verify(req: Request, _res: Response, next: NextFunction): void {
     const { token } = req.cookies;
-    console.log(token);
 
     if (!token) {
       throw new NotAuthorizedError('Token not available. Please Log In Again.');
