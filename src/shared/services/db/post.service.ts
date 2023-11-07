@@ -51,6 +51,17 @@ class PostService {
 
     await Promise.all([deletedPost, decrementPostCount]);
   }
+
+  public async updatePost(postId: string, updatedPost: IPostDocument): Promise<void> {
+    const post: UpdateQuery<IPostDocument> = PostModel.updateOne(
+      { _id: postId },
+      {
+        $set: updatedPost
+      }
+    );
+
+    
+  }
 }
 
 export const postService: PostService = new PostService();

@@ -103,10 +103,14 @@ export class PostCache extends BaseCache {
         score: parseInt(uId, 10),
         value: `${key}`
       });
-      multi.HSET(`posts:${key}`, dataToSave);
+
+      Object.entries(dataToSave).forEach(([postKey, value]): void => {
+        multi.HSET(`posts:${key}`, `${postKey}`, `${value}`);
+        return;
+      });
 
       const count: number = parseInt(postCount[0], 10) + 1;
-      multi.HSET(`users:${currentUserId}`, ['postsCount', count]);
+      multi.HSET(`users:${currentUserId}`, 'postsCount', count);
       await multi.exec();
     } catch (error) {
       log.error(error);
@@ -267,14 +271,26 @@ export class PostCache extends BaseCache {
     ];
 
     const secondList: string[] = ['profilePicture', `${profilePicture}`, 'imgId', `${imgId}`, 'imgVersion', `${imgVersion}`];
-    const dataToSave: string[] = [...firstList, ...secondList];
+    const dataToSave = {
+      post: `${post}`,
+      bgColor: `${bgColor}`,
+      feelings: `${feelings}`,
+      privacy: `${privacy}`,
+      gifUrl: `${gifUrl}`,
+      profilePicture: `${profilePicture}`,
+      imgId: `${imgId}`,
+      imgVersion: `${imgVersion}`
+    };
 
     try {
       if (!this.client.isOpen) {
         await this.client.connect();
       }
 
-      await this.client.HSET(`post:${key}`, dataToSave);
+      for (const [postKey, value] of Object.entries(dataToSave)) {
+        await this.client.HSET(`posts:${key}`, `${postKey}`, `${value}`);
+      }
+
       const multi: ReturnType<typeof this.client.multi> = this.client.multi();
       multi.HGETALL(`post:${key}`);
       const reply: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
