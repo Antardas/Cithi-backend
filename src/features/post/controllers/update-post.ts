@@ -27,9 +27,9 @@ export class Update {
   public async postWithImage(req: Request, res: Response): Promise<void> {
     const { imgId, imgVersion } = req.body;
     if (imgId && imgVersion) {
-      this.updatePostWithImage(req);
+      await Update.prototype.updatePostWithImage(req);
     } else {
-      const result: UploadApiResponse = await this.addImageToExistingPost(req);
+      const result: UploadApiResponse = await Update.prototype.addImageToExistingPost(req);
       if (!result?.public_id) {
         throw new BadRequestError(result.message);
       }

@@ -53,14 +53,12 @@ class PostService {
   }
 
   public async updatePost(postId: string, updatedPost: IPostDocument): Promise<void> {
-    const post: UpdateQuery<IPostDocument> = PostModel.updateOne(
+    const post: UpdateQuery<IPostDocument> = await PostModel.updateOne(
       { _id: postId },
       {
         $set: updatedPost
       }
     );
-
-    
   }
 }
 

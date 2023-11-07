@@ -286,10 +286,15 @@ export class PostCache extends BaseCache {
       if (!this.client.isOpen) {
         await this.client.connect();
       }
-
+      console.time('Update Post With Image');
+      const updateValueMulti: ReturnType<typeof this.client.multi> = this.client.multi();
       for (const [postKey, value] of Object.entries(dataToSave)) {
-        await this.client.HSET(`posts:${key}`, `${postKey}`, `${value}`);
+        console.log(`${postKey}`, `${value}`);
+
+        updateValueMulti.HSET(`posts:${key}`, `${postKey}`, `${value}`);
       }
+      await updateValueMulti.exec();
+      console.timeEnd('Update Post With Image');
 
       const multi: ReturnType<typeof this.client.multi> = this.client.multi();
       multi.HGETALL(`post:${key}`);
