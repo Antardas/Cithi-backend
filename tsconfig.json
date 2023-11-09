@@ -31,11 +31,13 @@
     "paths": {
       "@/auth/*": ["src/features/auth/*"],
       "@/user/*": ["src/features/user/*"],
+      "@/post/*": ["src/features/post/*"],
       "@/global/*": ["src/shared/global/*"],
       "@/service/*": ["src/shared/services/*"],
       "@/socket/*": ["src/shared/sockets/*"],
       "@/worker/*": ["src/shared/workers/*"],
       "@/root/*": ["src/*"] // always in last
     }
-  }
+  },
+  "exclude": ["./jest.config.ts"]
 }

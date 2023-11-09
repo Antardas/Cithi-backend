@@ -15,6 +15,7 @@ import applicationRoutes from '@/root/routes';
 import Logger from 'bunyan';
 import { config } from '@/root/config';
 import { CustomError, IErrorResponse } from '@/global/helpers/error-handler';
+import { SockIOPostHandler } from '@/socket/post';
 
 const SERVER_PORT = 5000;
 const log: Logger = config.createLogger('server');
@@ -47,7 +48,7 @@ export class ChattyServer {
     app.use(helmet());
     app.use(
       cors({
-        origin: config.CLIENT_URL, // TODO: make it actual origin in production
+        origin: [config.CLIENT_URL, '*'] as string[], // TODO: make it actual origin in production
         credentials: true,
         optionsSuccessStatus: 200,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
@@ -104,7 +105,13 @@ export class ChattyServer {
     });
 
     const subClient = pubClient.duplicate();
+    pubClient.on('error', (err) => {
+      log.error(err.message);
+    });
 
+    subClient.on('error', (err) => {
+      log.error(err.message);
+    });
     await Promise.all([pubClient.connect(), subClient.connect()]);
 
     io.adapter(createAdapter(pubClient, subClient));
@@ -120,7 +127,8 @@ export class ChattyServer {
     });
   }
 
-  private socketIOConnections(_io: Server): void {
-    log.info('SocketIOConnections');
+  private socketIOConnections(io: Server): void {
+    const postSocketHandler: SockIOPostHandler = new SockIOPostHandler(io);
+    postSocketHandler.listen();
   }
 }

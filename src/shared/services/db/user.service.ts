@@ -1,6 +1,6 @@
 import { IUserDocument } from '@/user/interfaces/user.interface';
-import { UserModel } from '@/user/models/user.schema';
-import mongoose from 'mongoose';
+import { UserModel } from '@/user/models/user.model';
+import mongoose, { UpdateQuery } from 'mongoose';
 
 class UserService {
   public async addUserData(data: IUserDocument): Promise<void> {
@@ -51,6 +51,16 @@ class UserService {
       }
     ]);
     return users[0];
+  }
+
+  public async incrementPostCount(userId: string) {
+    const user: UpdateQuery<IUserDocument> = await UserModel.updateOne(
+      { _id: userId },
+      {
+        $inc: { postsCount: 1 }
+      }
+    );
+    return user;
   }
 
   private aggregateProjects() {

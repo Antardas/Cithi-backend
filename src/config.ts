@@ -16,7 +16,11 @@ class Config {
   public CLOUD_API_KEY: string | undefined;
   public CLOUD_NAME: string | undefined;
   private readonly DEFAULT_DATABASE_URL = 'mongodb://127.0.0.1:27017/chithi';
-
+  public SENDER_EMAIL: string | undefined;
+  public SENDER_EMAIL_PASSWORD: string | undefined;
+  public BREVO_API_KEY: string | undefined;
+  public BREVO_HOST: string | undefined;
+  public BREVO_PORT: string | undefined;
   constructor() {
     this.DATABASE_URL = process.env.DATABASE_URL || this.DEFAULT_DATABASE_URL;
     this.JWT_TOKEN = process.env.JWT_TOKEN || 'DEFAULT_JWT_TOKEN';
@@ -28,6 +32,11 @@ class Config {
     this.CLOUD_API_SECRET = process.env.CLOUD_API_SECRET || '';
     this.CLOUD_API_KEY = process.env.CLOUD_API_KEY || '';
     this.CLOUD_NAME = process.env.CLOUD_NAME || '';
+    this.SENDER_EMAIL = process.env.SENDER_EMAIL;
+    this.SENDER_EMAIL_PASSWORD = process.env.SENDER_EMAIL_PASSWORD;
+    this.BREVO_API_KEY = process.env.BREVO_API_KEY;
+    this.BREVO_HOST = process.env.BREVO_HOST;
+    this.BREVO_PORT = process.env.BREVO_PORT;
   }
 
   public createLogger(name: string): bunyan {
