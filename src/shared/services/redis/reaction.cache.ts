@@ -59,6 +59,43 @@ export class ReactionCache extends BaseCache {
     }
   }
 
+  public async getReactions(postId: string): Promise<[IReactionDocument[], number]> {
+    try {
+      await this.createConnection();
+
+      const reactionCount: number = await this.client.LLEN(`reactions:${postId}`);
+      const response: string[] = await this.client.LRANGE(`reactions:${postId}`, 0, -1);
+      const list: IReactionDocument[] = [];
+      for (const item of response) {
+        list.push(Helpers.praseJson(item) as IReactionDocument);
+      }
+      return response.length ? [list, reactionCount] : [[], 0];
+    } catch (error) {
+      log.error(error);
+      throw new ServerError('Server error. Try Again');
+    }
+  }
+  public async getSingleReactionByUsername(postId: string, username: string): Promise<[IReactionDocument, number] | []> {
+    try {
+      await this.createConnection();
+
+      const response: string[] = await this.client.LRANGE(`reactions:${postId}`, 0, -1);
+      const list: IReactionDocument[] = [];
+      //BUG: we can also check or find it when "Parse to Json"
+      for (const item of response) {
+        list.push(Helpers.praseJson(item) as IReactionDocument);
+      }
+      const result: IReactionDocument = find(list, (listItem: IReactionDocument) => {
+        return listItem.postId === postId && listItem.username === username;
+      }) as IReactionDocument;
+      return response.length ? [result, 1] : [];
+
+    } catch (error) {
+      log.error(error);
+      throw new ServerError('Server error. Try Again');
+    }
+  }
+
   private getPreviousReaction(response: string[], username: string): IReactionDocument | undefined {
     const list: IReactionDocument[] = [];
     response.forEach((item) => {
