@@ -35,8 +35,8 @@ export class ReactionCache extends BaseCache {
 
       if (type) {
         await this.client.LPUSH(`${REACTION_kEY_PREFIX}:${key}`, JSON.stringify(reaction));
-        const dataToSave: string[] = ['reactions', JSON.stringify(postReactions)];
-        await this.client.HSET(`posts:${key}`, dataToSave);
+
+        await this.client.HSET(`posts:${key}`, 'reactions', JSON.stringify(postReactions));
       }
     } catch (error) {
       log.error(error);
@@ -51,8 +51,7 @@ export class ReactionCache extends BaseCache {
       const userPreviousReaction: IReactionDocument = this.getPreviousReaction(response, username) as IReactionDocument;
       multi.LREM(`${REACTION_kEY_PREFIX}:${key}`, 1, JSON.stringify(userPreviousReaction));
       await multi.exec();
-      const dataToSave: string[] = ['reactions', JSON.stringify(reaction)];
-      await this.client.HSET(`posts:${key}`, dataToSave);
+      await this.client.HSET(`posts:${key}`, 'reactions', JSON.stringify(reaction));
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try Again');
