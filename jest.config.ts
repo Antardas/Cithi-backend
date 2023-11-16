@@ -24,6 +24,7 @@ const config: Config.InitialOptions = {
     '@/auth/(.*)': ['<rootDir>/src/features/auth/$1'],
     '@/user/(.*)': ['<rootDir>/src/features/user/$1'],
     '@/post/(.*)': ['<rootDir>/src/features/post/$1'],
+    '@/reaction/(.*)': ['<rootDir>/src/features/reaction/$1'],
     '@/global/(.*)': ['<rootDir>/src/shared/global/$1'],
     '@/service/(.*)': ['<rootDir>/src/shared/services/$1'],
     '@/socket/(.*)': ['<rootDir>/src/shared/sockets/$1'],

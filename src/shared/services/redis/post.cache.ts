@@ -1,6 +1,6 @@
 import { ServerError } from '@/global/helpers/error-handler';
 import { Helpers } from '@/global/helpers/helpers';
-import { IPostDocument, IPostSaveToCache, IReaction } from '@/post/interfaces/post.interface';
+import { IPostDocument, IPostSaveToCache, IReactions } from '@/post/interfaces/post.interface';
 import { config } from '@/root/config';
 import { BaseCache } from '@/service/redis/base.cache';
 import Logger from 'bunyan';
@@ -135,7 +135,7 @@ export class PostCache extends BaseCache {
 
       for (const post of replies as IPostDocument[]) {
         post.commentCount = Helpers.praseJson(`${post.commentCount}`) as number;
-        post.reactions = Helpers.praseJson(`${post.reactions}`) as IReaction;
+        post.reactions = Helpers.praseJson(`${post.reactions}`) as IReactions;
         post.createAt = new Date(Helpers.praseJson(`${post.createAt}`));
         postReplies.push(post);
       }
@@ -180,7 +180,7 @@ export class PostCache extends BaseCache {
       for (const post of replies as IPostDocument[]) {
         if ((post.imgId && post.imgVersion) || post.gifUrl) {
           post.commentCount = Helpers.praseJson(`${post.commentCount}`) as number;
-          post.reactions = Helpers.praseJson(`${post.reactions}`) as IReaction;
+          post.reactions = Helpers.praseJson(`${post.reactions}`) as IReactions;
           post.createAt = new Date(Helpers.praseJson(`${post.createAt}`));
           postWithImagesReplies.push(post);
         }
@@ -210,7 +210,7 @@ export class PostCache extends BaseCache {
 
       for (const post of replies as IPostDocument[]) {
         post.commentCount = Helpers.praseJson(`${post.commentCount}`) as number;
-        post.reactions = Helpers.praseJson(`${post.reactions}`) as IReaction;
+        post.reactions = Helpers.praseJson(`${post.reactions}`) as IReactions;
         post.createAt = new Date(Helpers.praseJson(`${post.createAt}`));
         postReplies.push(post);
       }
@@ -301,7 +301,7 @@ export class PostCache extends BaseCache {
       const reply: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
       const post = reply as IPostDocument[];
       post[0].commentCount = Helpers.praseJson(`${post[0].commentCount}`) as number;
-      post[0].reactions = Helpers.praseJson(`${post[0].reactions}`) as IReaction;
+      post[0].reactions = Helpers.praseJson(`${post[0].reactions}`) as IReactions;
       post[0].createAt = new Date(Helpers.praseJson(`${post[0].createAt}`));
       return post[0];
     } catch (error) {

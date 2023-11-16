@@ -2,7 +2,7 @@ import mongoose, { Document } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
 // TODO: Move this to the reaction interface later
-export interface IReaction {
+export interface IReactions {
   like: number;
   love: number;
   happy: number;
@@ -26,7 +26,7 @@ export interface IPostDocument extends Document {
   feelings?: string;
   gifUrl?: string;
   privacy?: string;
-  reactions?: IReaction;
+  reactions?: IReactions;
   createAt?: Date;
 }
 
