@@ -74,7 +74,7 @@ export class ReactionCache extends BaseCache {
       throw new ServerError('Server error. Try Again');
     }
   }
-  public async getSingleReactionByUsername(postId: string, username: string): Promise<[IReactionDocument, number] | []> {
+  public async getSinglePostReactionByUsername(postId: string, username: string): Promise<[IReactionDocument, number] | []> {
     try {
       await this.createConnection();
 
@@ -88,7 +88,6 @@ export class ReactionCache extends BaseCache {
         return listItem.postId === postId && listItem.username === username;
       }) as IReactionDocument;
       return response.length ? [result, 1] : [];
-
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try Again');

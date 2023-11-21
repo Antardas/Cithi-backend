@@ -4,7 +4,6 @@ import { CookieHandler } from '@/global/helpers/cookie-handler';
 
 export class SignOut {
   public async update(req: Request, res: Response, _next: NextFunction): Promise<void> {
-    console.log(req.cookies);
 
     req.session = null;
     res.clearCookie('session');

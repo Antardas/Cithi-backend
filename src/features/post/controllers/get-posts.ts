@@ -40,7 +40,6 @@ export class Get {
     let posts: IPostDocument[] = [];
 
     const cachedPost: IPostDocument[] = await postCache.getPostsWithImagesFromCache('post', newSkip, limit);
-    console.log(cachedPost);
     posts = cachedPost.length
       ? cachedPost
       : await postService.getPosts(
