@@ -47,7 +47,6 @@ export class Password {
   @joiValidation(passwordSchema)
   public async update(req: Request, res: Response): Promise<void> {
     const { password, confirmPassword } = req.body;
-    console.log(req.params);
     const { token } = req.params;
 
     if (password !== confirmPassword) {

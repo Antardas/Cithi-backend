@@ -32,6 +32,7 @@
       "@/auth/*": ["src/features/auth/*"],
       "@/user/*": ["src/features/user/*"],
       "@/post/*": ["src/features/post/*"],
+      "@/reaction/*": ["src/features/reaction/*"],
       "@/global/*": ["src/shared/global/*"],
       "@/service/*": ["src/shared/services/*"],
       "@/socket/*": ["src/shared/sockets/*"],

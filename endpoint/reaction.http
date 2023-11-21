@@ -1,0 +1,61 @@
+@baseUrl=http://localhost:5000
+@urlPath=api/v1
+
+
+### new add reaction
+POST {{baseUrl}}/{{urlPath}}/post/reaction
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userTo": "655c31ba633d82339bbd1b63",
+  "postId":"654dee80dcbd3f94546f3bc1",
+  "type": "wow",
+  "previousReaction": "",
+  "postReactions": {"angry":0,"like":0,"love":0,"happy":0,"sad":0,"wow":1},
+  "profilePicture": ""
+}
+
+### update Reaction
+POST {{baseUrl}}/{{urlPath}}/post/reaction
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userTo": "6544809dfd7d85c7125885ae",
+  "postId":"654dee80dcbd3f94546f3bc1",
+  "type": "love",
+  "previousReaction": "wow",
+  "postReactions": {"angry":0,"like":0,"love":1,"happy":0,"sad":0,"wow":0},
+  "profilePicture": ""
+}
+
+
+### Delete Reaction
+DELETE {{baseUrl}}/{{urlPath}}/post/reaction/654dee80dcbd3f94546f3bc1/wow/{"angry":0,"like":0,"love":0,"happy":0,"sad":0,"wow":0}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+### Get Single Post Reaction
+GET {{baseUrl}}/{{urlPath}}/post/reactions/654dee80dcbd3f94546f3bc1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+### Get Single Post Reaction via Username
+GET {{baseUrl}}/{{urlPath}}/post/single/reaction/Devant/654dee80dcbd3f94546f3bc1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+### Get Single Post Reaction via Username
+GET {{baseUrl}}/{{urlPath}}/post/single/reactions/Devant
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+#
