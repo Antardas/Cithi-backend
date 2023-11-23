@@ -33,6 +33,7 @@
       "@/user/*": ["src/features/user/*"],
       "@/post/*": ["src/features/post/*"],
       "@/reaction/*": ["src/features/reaction/*"],
+      "@/comment/*": ["src/features/comment/*"],
       "@/global/*": ["src/shared/global/*"],
       "@/service/*": ["src/shared/services/*"],
       "@/socket/*": ["src/shared/sockets/*"],
