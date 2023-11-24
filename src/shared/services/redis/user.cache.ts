@@ -115,14 +115,14 @@ export class UserCache extends BaseCache {
       const response: IUserDocument = (await this.client.HGETALL(`users:${userId}`)) as unknown as IUserDocument;
       console.log(response.social, 'reponse');
 
-      response.createdAt = new Date(Helpers.praseJson(`${response.createdAt}`));
-      response.postsCount = Helpers.praseJson(`${response.postsCount}`);
-      response.blocked = Helpers.praseJson(`${response.blocked}`);
-      response.blockedBy = Helpers.praseJson(`${response.blockedBy}`);
-      response.notifications = Helpers.praseJson(`${response.notifications}`);
-      response.social = Helpers.praseJson(String(response.social));
-      response.followersCount = Helpers.praseJson(`${response.followersCount}`);
-      response.followingCount = Helpers.praseJson(`${response.followingCount}`);
+      response.createdAt = new Date(Helpers.parseJson(`${response.createdAt}`));
+      response.postsCount = Helpers.parseJson(`${response.postsCount}`);
+      response.blocked = Helpers.parseJson(`${response.blocked}`);
+      response.blockedBy = Helpers.parseJson(`${response.blockedBy}`);
+      response.notifications = Helpers.parseJson(`${response.notifications}`);
+      response.social = Helpers.parseJson(String(response.social));
+      response.followersCount = Helpers.parseJson(`${response.followersCount}`);
+      response.followingCount = Helpers.parseJson(`${response.followingCount}`);
       return response;
     } catch (error) {
       log.error(error);

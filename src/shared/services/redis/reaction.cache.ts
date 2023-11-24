@@ -66,7 +66,7 @@ export class ReactionCache extends BaseCache {
       const response: string[] = await this.client.LRANGE(`reactions:${postId}`, 0, -1);
       const list: IReactionDocument[] = [];
       for (const item of response) {
-        list.push(Helpers.praseJson(item) as IReactionDocument);
+        list.push(Helpers.parseJson(item) as IReactionDocument);
       }
       return response.length ? [list, reactionCount] : [[], 0];
     } catch (error) {
@@ -82,7 +82,7 @@ export class ReactionCache extends BaseCache {
       const list: IReactionDocument[] = [];
       //BUG: we can also check or find it when "Parse to Json"
       for (const item of response) {
-        list.push(Helpers.praseJson(item) as IReactionDocument);
+        list.push(Helpers.parseJson(item) as IReactionDocument);
       }
       const result: IReactionDocument = find(list, (listItem: IReactionDocument) => {
         return listItem.postId === postId && listItem.username === username;
@@ -97,7 +97,7 @@ export class ReactionCache extends BaseCache {
   private getPreviousReaction(response: string[], username: string): IReactionDocument | undefined {
     const list: IReactionDocument[] = [];
     response.forEach((item) => {
-      list.push(Helpers.praseJson(item));
+      list.push(Helpers.parseJson(item));
     });
 
     return find(list, (listItem: IReactionDocument) => {
