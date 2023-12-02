@@ -92,32 +92,44 @@ export class ChattyServer {
     }
   }
 
-  private async createSocketIO(httpServer: http.Server): Promise<Server> {
-    const io: Server = new Server(httpServer, {
-      cors: {
-        origin: config.CLIENT_URL,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-      }
-    });
+/**
+ * Creates and configures a Socket.IO server to handle connections on the given HTTP server.
+ * @param httpServer - The HTTP server instance to attach the Socket.IO server to.
+ * @returns A Promise resolving to the configured Socket.IO server instance.
+ */
+private async createSocketIO(httpServer: http.Server): Promise<Server> {
+  // Create a new Socket.IO server instance with CORS configuration.
+  const io: Server = new Server(httpServer, {
+    cors: {
+      origin: config.CLIENT_URL, // Allow connections from the specified client URL.
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] // Allow specified HTTP methods.
+    }
+  });
 
-    const pubClient = createClient({
-      url: config.REDIS_HOST
-    });
+  // Create a Redis pub/sub client for handling socket.io scaling across multiple server instances.
+  const pubClient = createClient({
+    url: config.REDIS_HOST
+  });
 
-    const subClient = pubClient.duplicate();
-    pubClient.on('error', (err) => {
-      log.error(err.message);
-    });
+  // Create a duplicate Redis client for subscribing to channels.
+  const subClient = pubClient.duplicate();
 
-    subClient.on('error', (err) => {
-      log.error(err.message);
-    });
-    await Promise.all([pubClient.connect(), subClient.connect()]);
+  // Handle errors for both pubClient and subClient.
+  pubClient.on('error', (err) => {
+    log.error(err.message);
+  });
 
-    io.adapter(createAdapter(pubClient, subClient));
+  subClient.on('error', (err) => {
+    log.error(err.message);
+  });
 
-    return io;
-  }
+  await Promise.all([pubClient.connect(), subClient.connect()]);
+
+  // Configure Socket.IO to use the Redis adapter for handling scaling across multiple instances.
+  io.adapter(createAdapter(pubClient, subClient));
+
+  return io;
+}
 
   private startHttpServer(httpServer: http.Server): void {
     log.info(`Server has started  with process ${process.pid}`);
