@@ -12,4 +12,5 @@ const addCommentSchema: ObjectSchema = Joi.object().keys({
   profilePicture: Joi.string().optional().allow(null, ''),
   commentsCount: Joi.number().optional().allow(null, '').default(0)
 });
+export { addCommentSchema };
 //

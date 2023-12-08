@@ -1,0 +1,35 @@
+@baseUrl=http://localhost:5000
+@urlPath=api/v1
+
+
+### Add Comment
+POST {{baseUrl}}/{{urlPath}}/comments
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userTo": "6544809dfd7d85c7125885ae",
+  "postId": "654dee80dcbd3f94546f3bc1",
+  "comment": "My Comment ",
+  "profilePicture": "<cloudinary-user-profile-picture-url>"
+}
+
+### All Commentes
+GET {{baseUrl}}/{{urlPath}}/comments/654dee80dcbd3f94546f3bc1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+### All Commented User Name
+GET {{baseUrl}}/{{urlPath}}/comments/names/654dee80dcbd3f94546f3bc1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+### Single Comment 
+GET {{baseUrl}}/{{urlPath}}/comments/654dee80dcbd3f94546f3bc1/6572e546bb891b94a907cb51
+Content-Type: application/json
+Accept: application/json
+withCredentials: true

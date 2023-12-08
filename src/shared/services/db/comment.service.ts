@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */ // NOTE: remove this line
-import { Query } from 'mongoose';
+import { ObjectId, Query } from 'mongoose';
 import { UserCache } from '@/service/redis/user.cache';
 import { ICommentDocument, ICommentJob, ICommentNameList, IQueryComment } from '@/comment/interfaces/comment.interface';
 import { CommentModel } from '@/comment/models/comment.schema';
@@ -12,6 +12,7 @@ const userCache: UserCache = new UserCache();
 class CommentService {
   public async addCommentToDB(commentData: ICommentJob): Promise<void> {
     const { postId, userTo, userFrom, comment, username } = commentData;
+    console.log(comment);
 
     const comments: Promise<ICommentDocument> = CommentModel.create(comment);
     const post: Query<IPostDocument, IPostDocument> = PostModel.findByIdAndUpdate(
@@ -43,8 +44,9 @@ class CommentService {
 
     return comments;
   }
-
+  
   public async getPostCommentNames(query: IQueryComment, sort: Record<string, 1 | -1>): Promise<ICommentNameList> {
+    //TODO: Return only Each name once
     const commentsNamesList: ICommentNameList[] = await CommentModel.aggregate([
       {
         $match: query
@@ -74,6 +76,10 @@ class CommentService {
     } else {
       return {} as ICommentNameList;
     }
+  }
+
+  public async getSingleComment(commentId: string | ObjectId): Promise<ICommentDocument | null> {
+    return await CommentModel.findById(commentId);
   }
 }
 

@@ -9,12 +9,10 @@ Accept: application/json
 withCredentials: true
 
 {
-  "userTo": "655c31ba633d82339bbd1b63",
-  "postId":"654dee80dcbd3f94546f3bc1",
-  "type": "wow",
-  "previousReaction": "",
-  "postReactions": {"angry":0,"like":0,"love":0,"happy":0,"sad":0,"wow":1},
-  "profilePicture": ""
+  "userTo": "",
+  "postId": "",
+  "comment": "",
+  "profilePicture": "<cloudinary-user-profile-picture-url>"
 }
 
 ### update Reaction
