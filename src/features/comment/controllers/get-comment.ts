@@ -5,6 +5,8 @@ import { CommentCache } from '@/service/redis/comment.cache';
 import { Request, Response } from 'express';
 import { commentService } from '@/service/db/comment.service';
 import mongoose from 'mongoose';
+import { isEmpty } from 'lodash';
+
 
 const commentCache: CommentCache = new CommentCache();
 export class Get {
@@ -59,9 +61,9 @@ export class Get {
   public async singleComment(req: Request, res: Response): Promise<void> {
     const { postId, commentId } = req.params;
 
-    let comment: ICommentDocument | null = await commentCache.getSingleCommentFromCache(postId, commentId);
-    if (!comment) {
-      comment = await commentService.getSingleComment(commentId);
+    let comment: ICommentDocument  = await commentCache.getSingleCommentFromCache(postId, commentId);
+    if (isEmpty(comment)) {
+      comment = await commentService.getSingleComment(commentId) as ICommentDocument;
     }
 
     res.status(HTTP_STATUS.OK).json({
