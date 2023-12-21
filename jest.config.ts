@@ -26,6 +26,7 @@ const config: Config.InitialOptions = {
     '@/post/(.*)': ['<rootDir>/src/features/post/$1'],
     '@/reaction/(.*)': ['<rootDir>/src/features/reaction/$1'],
     '@/comment/(.*)': ['<rootDir>/src/features/comment/$1'],
+    '@/follower/(.*)': ['<rootDir>/src/features/follower/$1'],
     '@/global/(.*)': ['<rootDir>/src/shared/global/$1'],
     '@/service/(.*)': ['<rootDir>/src/shared/services/$1'],
     '@/socket/(.*)': ['<rootDir>/src/shared/sockets/$1'],
