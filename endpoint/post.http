@@ -1,14 +1,17 @@
 @baseUrl=http://localhost:5000
 @urlPath=api/v1
+# Antar (123456)
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWEyMzE3MDE5N2RkZDJjNzA5NjgxNzciLCJ1SWQiOiIyMzU0MjM0MDM3NTAiLCJlbWFpbCI6ImRldi5hbnRhcmRhc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6IkFudGFyIiwiYXZhdGFyQ29sb3IiOiJibGFjayIsImlhdCI6MTcwNTEyOTU2OH0.fzEYd24mRYJbWvW8-VtCjlicKEkrLPzOwxDSq8sHito
 
-###
+### Create Post
 POST {{baseUrl}}/{{urlPath}}/post
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
+Authorization: {{token}}
 
 {
-  "post": "Hello, world!",
+  "post": "New Post 3",
   "bgColor": "#F0F0F0",
   "privacy": "public",
   "feelings": "happy",
@@ -20,14 +23,15 @@ withCredentials: true
 }
 
 
-###
+### Create Post with Image
 POST {{baseUrl}}/{{urlPath}}/post/image
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
+Authorization: {{token}}
 
 {
-  "post": "Hello, world! 2",
+  "post": "New Post 2",
   "bgColor": "#F0F0F0",
   "privacy": "public",
   "feelings": "happy",
@@ -39,7 +43,7 @@ withCredentials: true
 }
 
 
-###
+### Update Post
 PUT {{baseUrl}}/{{urlPath}}/post/6545213ceb4c599166995fa7
 Content-Type: application/json
 Accept: application/json
@@ -77,13 +81,13 @@ withCredentials: true
 }
 
 
-###
+### get post with page number
 GET {{baseUrl}}/{{urlPath}}/post/all/1
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
-###
+### get post with page number
 GET {{baseUrl}}/{{urlPath}}/post/all/images/1
 Content-Type: application/json
 Accept: application/json
