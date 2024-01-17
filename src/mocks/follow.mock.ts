@@ -48,3 +48,5 @@ export const followerData = {
     profilePicture: 'https://res.cloudinary.com/ratingapp/image/upload/605727cd646eb50e668a4e13'
   }
 };
+
+export const followeeId: string = '6064861bc25eaa5a5d2f9bf4';
