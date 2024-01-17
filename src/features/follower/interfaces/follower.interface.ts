@@ -29,18 +29,18 @@ export interface IFollowerData {
   username: string;
   uId: string;
   _id?: mongoose.Types.ObjectId;
-  userProfile?: IUserDocument ;
+  userProfile?: IUserDocument;
 }
 
 export interface IFollowerJobData {
-  keyOne?: string;
-  keyTwo?: string;
+  followeeId?: string;
+  followerId?: string;
   username?: string;
   followerDocumentId?: ObjectId;
 }
 
 export interface IBlockedUserJobData {
-  keyOne?: string;
-  keyTwo?: string;
+  followeeId?: string;
+  followerId?: string;
   type?: string;
 }

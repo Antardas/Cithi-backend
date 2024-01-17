@@ -15,7 +15,8 @@ import applicationRoutes from '@/root/routes';
 import Logger from 'bunyan';
 import { config } from '@/root/config';
 import { CustomError, IErrorResponse } from '@/global/helpers/error-handler';
-import { SockIOPostHandler } from '@/socket/post';
+import { SocketIOPostHandler } from '@/socket/post';
+import { SocketIOFollowerHandler } from '@/socket/follower';
 
 const SERVER_PORT = 5000;
 const log: Logger = config.createLogger('server');
@@ -92,44 +93,44 @@ export class ChattyServer {
     }
   }
 
-/**
- * Creates and configures a Socket.IO server to handle connections on the given HTTP server.
- * @param httpServer - The HTTP server instance to attach the Socket.IO server to.
- * @returns A Promise resolving to the configured Socket.IO server instance.
- */
-private async createSocketIO(httpServer: http.Server): Promise<Server> {
-  // Create a new Socket.IO server instance with CORS configuration.
-  const io: Server = new Server(httpServer, {
-    cors: {
-      origin: config.CLIENT_URL, // Allow connections from the specified client URL.
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] // Allow specified HTTP methods.
-    }
-  });
+  /**
+   * Creates and configures a Socket.IO server to handle connections on the given HTTP server.
+   * @param httpServer - The HTTP server instance to attach the Socket.IO server to.
+   * @returns A Promise resolving to the configured Socket.IO server instance.
+   */
+  private async createSocketIO(httpServer: http.Server): Promise<Server> {
+    // Create a new Socket.IO server instance with CORS configuration.
+    const io: Server = new Server(httpServer, {
+      cors: {
+        origin: config.CLIENT_URL, // Allow connections from the specified client URL.
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] // Allow specified HTTP methods.
+      }
+    });
 
-  // Create a Redis pub/sub client for handling socket.io scaling across multiple server instances.
-  const pubClient = createClient({
-    url: config.REDIS_HOST
-  });
+    // Create a Redis pub/sub client for handling socket.io scaling across multiple server instances.
+    const pubClient = createClient({
+      url: config.REDIS_HOST
+    });
 
-  // Create a duplicate Redis client for subscribing to channels.
-  const subClient = pubClient.duplicate();
+    // Create a duplicate Redis client for subscribing to channels.
+    const subClient = pubClient.duplicate();
 
-  // Handle errors for both pubClient and subClient.
-  pubClient.on('error', (err) => {
-    log.error(err.message);
-  });
+    // Handle errors for both pubClient and subClient.
+    pubClient.on('error', (err) => {
+      log.error(err.message);
+    });
 
-  subClient.on('error', (err) => {
-    log.error(err.message);
-  });
+    subClient.on('error', (err) => {
+      log.error(err.message);
+    });
 
-  await Promise.all([pubClient.connect(), subClient.connect()]);
+    await Promise.all([pubClient.connect(), subClient.connect()]);
 
-  // Configure Socket.IO to use the Redis adapter for handling scaling across multiple instances.
-  io.adapter(createAdapter(pubClient, subClient));
+    // Configure Socket.IO to use the Redis adapter for handling scaling across multiple instances.
+    io.adapter(createAdapter(pubClient, subClient));
 
-  return io;
-}
+    return io;
+  }
 
   private startHttpServer(httpServer: http.Server): void {
     log.info(`Server has started  with process ${process.pid}`);
@@ -140,7 +141,9 @@ private async createSocketIO(httpServer: http.Server): Promise<Server> {
   }
 
   private socketIOConnections(io: Server): void {
-    const postSocketHandler: SockIOPostHandler = new SockIOPostHandler(io);
+    const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io);
+    const socketIOFollowerHandler: SocketIOFollowerHandler = new SocketIOFollowerHandler(io);
     postSocketHandler.listen();
+    socketIOFollowerHandler.listen();
   }
 }

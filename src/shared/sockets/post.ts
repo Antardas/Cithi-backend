@@ -4,7 +4,7 @@ import { ICommentDocument } from '@/comment/interfaces/comment.interface';
 
 export let socketIOPostObject: Server;
 
-export class SockIOPostHandler {
+export class SocketIOPostHandler {
   private io: Server;
   constructor(io: Server) {
     this.io = io;
