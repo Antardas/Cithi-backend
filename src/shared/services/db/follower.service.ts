@@ -1,7 +1,7 @@
 import { FollowerModel } from '@/follower/models/follower.model';
 import mongoose, { Query } from 'mongoose';
 import { ObjectId } from 'mongodb';
-import { IFollowerDocument } from '@/follower/interfaces/follower.interface';
+import { IFollowerData, IFollowerDocument } from '@/follower/interfaces/follower.interface';
 import { UserModel } from '@/user/models/user.model';
 import { IQueryComplete, IQueryDelete } from '@/post/interfaces/post.interface';
 
@@ -14,8 +14,8 @@ interface FollowerData {
 
 class FollowerService {
   public async addFollowerToDB(followerData: FollowerData): Promise<void> {
-    const {followerId, followeeId, username, followerDocumentId } = followerData;
-    const followeeObjectId: ObjectId = new mongoose.Types.ObjectId( followeeId);
+    const { followerId, followeeId, username, followerDocumentId } = followerData;
+    const followeeObjectId: ObjectId = new mongoose.Types.ObjectId(followeeId);
     const followerObjectId: ObjectId = new mongoose.Types.ObjectId(followerId);
 
     await FollowerModel.create({
@@ -28,7 +28,7 @@ class FollowerService {
       {
         updateOne: {
           filter: {
-            _id:  followerObjectId
+            _id: followerObjectId
           },
           update: {
             $inc: {
@@ -91,6 +91,59 @@ class FollowerService {
     ]);
 
     await Promise.all([users, unfollow]);
+  }
+
+  public async getFolloweeData(userObjectId: ObjectId): Promise<IFollowerData[]> {
+    const followee: IFollowerData[] = await FollowerModel.aggregate([
+      {
+        $match: {
+          followeeId: userObjectId
+        }
+      },
+      {
+        $lookup: {
+          from: 'User',
+          localField: 'followeeId', // LocalField show suggestion all type of object ID
+          foreignField: '_id',
+          as: 'followeeId' // FIXME : followeeId to followee
+        }
+      },
+      {
+        $unwind: 'followeeId'
+      },
+      {
+        $lookup: {
+          from: 'Auth',
+          localField: 'followeeId.authId',
+          foreignField: '_id',
+          as: 'authId'
+        }
+      },
+      { $unwind: '$authId' },
+      {
+        $addFields: {
+          _id: '$followeeId._id',
+          username: '$authId.username',
+          avatarColor: '$authId.avatarColor',
+          followersCount: '$followeeId.followersCount',
+          followingCount: '$followeeId.followingCount',
+          profilePicture: '$followeeId.profilePicture',
+          postCount: '$followeeId.postCount',
+          uId: '$followeeId.uId',
+          userProfile: '$followeeId'
+        }
+      },
+      {
+        $project: {
+          authId: 0,
+          followeeId: 0,
+          followerId: 0,
+          createdAt: 0,
+          __v: 0
+        }
+      }
+    ]);
+    return followee;
   }
 }
 export const followerService: FollowerService = new FollowerService();
