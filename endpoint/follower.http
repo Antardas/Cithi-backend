@@ -44,3 +44,22 @@ Authorization: {{token}}
 
 {
 }
+
+### Block User
+PUT  {{baseUrl}}/{{urlPath}}/users/block/{{followeeId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+Authorization: {{token}}
+
+{
+}
+### Unblock User 
+PUT  {{baseUrl}}/{{urlPath}}/users/unblock/{{followeeId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+Authorization: {{token}}
+
+{
+}
