@@ -3,11 +3,10 @@ import JWT from 'jsonwebtoken';
 import { config } from '@/root/config';
 import { NotAuthorizedError } from '@/global/helpers/error-handler';
 import { AuthPayload } from '@/auth/interfaces/auth.interface';
-
 class AuthMiddleware {
   public verify(req: Request, _res: Response, next: NextFunction): void {
-    const { token } = req.cookies;
-
+    let { token } = req.cookies;
+    token = token ?? req.headers.authorization;
     if (!token) {
       throw new NotAuthorizedError('Token not available. Please Log In Again.');
     }

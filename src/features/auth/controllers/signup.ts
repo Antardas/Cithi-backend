@@ -52,6 +52,7 @@ export class SignUp {
     await userCache.saveUserToCache(`${userObjectId.toString()}`, uId, userDataForCache);
 
     // for adding to the Database, we are adding in queue and from the queue we our worker take this data and write (process) in database
+    // TODO use omitted return object
     omit(userDataForCache, ['uId', 'username', 'email', 'avatarColor']);
     authQueue.addAuthUserJob('addAuthUserToDB', { value: authData });
     userQueue.addUserJob(ADD_USER_TO_DB, { value: userDataForCache });
@@ -83,10 +84,10 @@ export class SignUp {
   }
 
   private userData(data: IAuthDocument, userObjectId: ObjectId): IUserDocument {
-    const { _id, username, email, uId, password, avatarColor } = data;
+    const { _id: authId, username, email, uId, password, avatarColor } = data;
     return {
       _id: userObjectId,
-      authId: _id,
+      authId: authId,
       uId,
       username: Helpers.firstLatterUpperCase(username),
       email,
