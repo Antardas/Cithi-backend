@@ -21,7 +21,7 @@ export class Get {
   }
 
   public async followers(req: Request, res: Response): Promise<void> {
-    const userObjectId: ObjectId = new mongoose.Types.ObjectId(req.params?.userId);
+    const userObjectId: ObjectId = new mongoose.Types.ObjectId(req.currentUser?.userId);
 
     const cachedFollowers: IFollowerData[] = await followerCache.getFollowerFromCache(`followers:${req.currentUser?.userId}`);
 
