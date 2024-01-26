@@ -5,8 +5,8 @@
 @followeeId=65a23170197ddd2c70968177
 
 
-### Followe User 
-PUT  {{baseUrl}}/{{urlPath}}//users/follow/{{followeeId}}
+### Followe User
+PUT  {{baseUrl}}/{{urlPath}}/users/follow/{{followeeId}}
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
@@ -16,7 +16,27 @@ Authorization: {{token}}
 }
 
 ### Unfolllow User
-PUT  {{baseUrl}}/{{urlPath}}//users/unfollow/{{followeeId}}
+PUT  {{baseUrl}}/{{urlPath}}/users/unfollow/{{followeeId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+Authorization: {{token}}
+
+{
+}
+
+### Get All Followings
+GET  {{baseUrl}}/{{urlPath}}/users/followings
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+Authorization: {{token}}
+
+{
+}
+
+### Get All Followers
+GET {{baseUrl}}/{{urlPath}}/users/followers
 Content-Type: application/json
 Accept: application/json
 withCredentials: true

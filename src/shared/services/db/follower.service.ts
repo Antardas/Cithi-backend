@@ -93,7 +93,7 @@ class FollowerService {
     await Promise.all([users, unfollow]);
   }
 
-  public async getFolloweeData(userObjectId: ObjectId): Promise<IFollowerData[]> {
+  public async getFollowersData(userObjectId: ObjectId): Promise<IFollowerData[]> {
     const followee: IFollowerData[] = await FollowerModel.aggregate([
       {
         $match: {
@@ -109,7 +109,7 @@ class FollowerService {
         }
       },
       {
-        $unwind: 'followeeId'
+        $unwind: '$followeeId'
       },
       {
         $lookup: {
@@ -144,6 +144,59 @@ class FollowerService {
       }
     ]);
     return followee;
+  }
+
+  public async getFolloweesData(userObjectId: ObjectId): Promise<IFollowerData[]> {
+    const followers: IFollowerData[] = await FollowerModel.aggregate([
+      {
+        $match: {
+          followerId: userObjectId
+        }
+      },
+      {
+        $lookup: {
+          from: 'User',
+          localField: 'followerId', // LocalField show suggestion all type of object ID
+          foreignField: '_id',
+          as: 'followerId' // FIXME : followerId to followee
+        }
+      },
+      {
+        $unwind: '$followerId'
+      },
+      {
+        $lookup: {
+          from: 'Auth',
+          localField: 'followerId.authId',
+          foreignField: '_id',
+          as: 'authId'
+        }
+      },
+      { $unwind: '$authId' },
+      {
+        $addFields: {
+          _id: '$followerId._id',
+          username: '$authId.username',
+          avatarColor: '$authId.avatarColor',
+          followersCount: '$followerId.followersCount',
+          followingCount: '$followerId.followingCount',
+          profilePicture: '$followerId.profilePicture',
+          postCount: '$followerId.postCount',
+          uId: '$followerId.uId',
+          userProfile: '$followerId'
+        }
+      },
+      {
+        $project: {
+          authId: 0,
+          followeeId: 0,
+          followerId: 0,
+          createdAt: 0,
+          __v: 0
+        }
+      }
+    ]);
+    return followers;
   }
 }
 export const followerService: FollowerService = new FollowerService();

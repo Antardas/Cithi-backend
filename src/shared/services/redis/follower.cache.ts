@@ -55,9 +55,10 @@ export class FollowerCache extends BaseCache {
   }
   public async getFollowerFromCache(key: string): Promise<IFollowerData[]> {
     try {
+      await this.createConnection();
       /**
        * TODO: Sort By Add Recently Followed
-       * 
+       *
        */
       const followersId: string[] = await this.client.LRANGE(key, 0, -1);
       const followers: IFollowerData[] = [];
