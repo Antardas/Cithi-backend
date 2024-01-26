@@ -1,3 +1,4 @@
+import { SocketIoUserHandler } from '@/socket/user';
 import { Application, json, urlencoded, Request, Response, NextFunction } from 'express';
 import http from 'http';
 import cors from 'cors';
@@ -143,7 +144,9 @@ export class ChattyServer {
   private socketIOConnections(io: Server): void {
     const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io);
     const socketIOFollowerHandler: SocketIOFollowerHandler = new SocketIOFollowerHandler(io);
+    const socketIoUserHandler: SocketIoUserHandler = new SocketIoUserHandler(io);
     postSocketHandler.listen();
     socketIOFollowerHandler.listen();
+    socketIoUserHandler.handler();
   }
 }
