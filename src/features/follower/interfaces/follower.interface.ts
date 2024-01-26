@@ -42,5 +42,5 @@ export interface IFollowerJobData {
 export interface IBlockedUserJobData {
   blockingUserId?: string;
   blockedUserId?: string;
-  type?: string;
+  type?: 'block' | 'unblock';
 }

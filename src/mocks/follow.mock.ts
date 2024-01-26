@@ -16,6 +16,7 @@ export const followMockResponse = (): Response => {
 interface IBody {}
 interface IParams {
   followeeId?: string;
+  id?: string;
 }
 
 export const mockFollowerData: IFollowerData = {
