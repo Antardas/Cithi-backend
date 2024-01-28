@@ -1,9 +1,17 @@
+import { UserCache } from '@/service/redis/user.cache';
+import { COMMENT_EMAIL, FOLLOWING_EMAIL, emailQueue } from '@/service/queues/email.queue';
 import { FollowerModel } from '@/follower/models/follower.model';
 import mongoose, { Query } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { IFollowerData, IFollowerDocument } from '@/follower/interfaces/follower.interface';
 import { UserModel } from '@/user/models/user.model';
 import { IQueryComplete, IQueryDelete } from '@/post/interfaces/post.interface';
+import { IUserDocument } from '@/user/interfaces/user.interface';
+import { NotFoundError } from '@/global/helpers/error-handler';
+import { INotificationDocument, INotificationTemplate } from '@/notification/interfaces/notification.interface';
+import { NotificationModel } from '@/notification/models/notification.schema';
+import { socketIONotificationObject } from '@/socket/notification';
+import { notificationTemplate } from '../emails/notifications/notification-template';
 
 interface FollowerData {
   followerId: string;
@@ -12,19 +20,21 @@ interface FollowerData {
   followerDocumentId: ObjectId;
 }
 
+const userCache: UserCache = new UserCache();
+
 class FollowerService {
   public async addFollowerToDB(followerData: FollowerData): Promise<void> {
     const { followerId, followeeId, username, followerDocumentId } = followerData;
     const followeeObjectId: ObjectId = new mongoose.Types.ObjectId(followeeId);
     const followerObjectId: ObjectId = new mongoose.Types.ObjectId(followerId);
 
-    await FollowerModel.create({
+    const followerDoc: IFollowerDocument = await FollowerModel.create({
       followeeId: followeeObjectId,
       followerId: followerObjectId,
       _id: followerDocumentId
     });
 
-    const users: Promise<mongoose.mongo.BulkWriteResult> = UserModel.bulkWrite([
+    const usersPromise: Promise<mongoose.mongo.BulkWriteResult> = UserModel.bulkWrite([
       {
         updateOne: {
           filter: {
@@ -51,7 +61,45 @@ class FollowerService {
       }
     ]);
 
-    await Promise.all([users, UserModel.findById(followeeId)]);
+    const [users, user]: [mongoose.mongo.BulkWriteResult, IUserDocument | null] = await Promise.all([usersPromise, userCache.getUserFromCache(followeeId)]);
+
+    if (!user) {
+      throw new NotFoundError('Followee not found');
+    }
+
+    if (user.notifications.follows) {
+      const notificationDoc: INotificationDocument = new NotificationModel();
+      const notifications = await notificationDoc.insertNotification({
+        userFrom: followerId,
+        userTo: followeeId,
+        message: `${username}  now following you.`,
+        notificationType: 'comment',
+        entityId: new mongoose.Types.ObjectId(followerId),
+        createdItemId: new mongoose.Types.ObjectId(followerDoc._id),
+        createdAt: new Date(),
+        comment: '',
+        post: '',
+        imgId: '',
+        imgVersion: '',
+        gifUrl: '',
+        reaction: ''
+      });
+
+      socketIONotificationObject.emit('INSERT_NOTIFICATION', notifications, { userTo: followeeId });
+      const templateParams: INotificationTemplate = {
+        username: user.username ?? '',
+        header: 'Followed you',
+        message: `${username}  now following you.`
+      };
+
+      const template: string = notificationTemplate.notificationMessageTemplate(templateParams);
+
+      emailQueue.addEmailJob(FOLLOWING_EMAIL, {
+        receiverEmail: user.email ?? '',
+        subject: 'Follow notification',
+        template
+      });
+    }
   }
 
   public async removeFollowerToDB(followeeId: string, followerId: string): Promise<void> {
