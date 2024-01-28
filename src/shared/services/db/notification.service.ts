@@ -15,11 +15,11 @@ class NotificationService {
           from: 'User',
           localField: 'userFrom',
           foreignField: '_id',
-          as: 'userForm'
+          as: 'userFrom'
         }
       },
       {
-        $unwind: '$userForm'
+        $unwind: '$userFrom'
       },
       {
         $lookup: {
