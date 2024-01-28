@@ -18,7 +18,7 @@ import { config } from '@/root/config';
 import { CustomError, IErrorResponse } from '@/global/helpers/error-handler';
 import { SocketIOPostHandler } from '@/socket/post';
 import { SocketIOFollowerHandler } from '@/socket/follower';
-import { SocketIONotificationHandler } from '@/socket/notificaiton';
+import { SocketIONotificationHandler } from '@/socket/notification';
 
 const SERVER_PORT = 5000;
 const log: Logger = config.createLogger('server');
