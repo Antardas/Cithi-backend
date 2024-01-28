@@ -9,7 +9,7 @@ import { PostModel } from '@/post/model/post.model';
 import { IUserDocument } from '@/user/interfaces/user.interface';
 import { INotificationDocument, INotificationTemplate } from '@/notification/interfaces/notification.interface';
 import { NotificationModel } from '@/notification/models/notification.schema';
-import { socketIONotificationObject } from '@/socket/notificaiton';
+import { socketIONotificationObject } from '@/socket/notification';
 import { COMMENT_EMAIL, emailQueue } from '../queues/email.queue';
 
 const userCache: UserCache = new UserCache();
@@ -29,6 +29,7 @@ class CommentService {
       { new: true }
     ) as Query<IPostDocument, IPostDocument>;
 
+    // TODO: handle if userCache not exist
     const userPromise: Promise<IUserDocument> = userCache.getUserFromCache(userTo) as Promise<IUserDocument>;
 
     const response: [ICommentDocument, IPostDocument, IUserDocument] = await Promise.all([comments, post, userPromise]);
