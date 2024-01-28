@@ -19,7 +19,7 @@ const notificationSchema: Schema = new Schema({
   createdAt: { type: Date, default: Date.now() }
 });
 
-notificationSchema.methods.insertNotification = async (body: INotification) => {
+notificationSchema.methods.insertNotification= async (body: INotification)  =>  {
   const { userFrom, userTo, message, notificationType, entityId, createdItemId, createdAt, comment, reaction, post, imgId, imgVersion, gifUrl } =
     body;
 
