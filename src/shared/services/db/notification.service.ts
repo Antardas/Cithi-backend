@@ -59,6 +59,18 @@ class NotificationService {
     ]);
     return notifications;
   }
+
+  async updateRead(notificationId: string): Promise<void> {
+    await NotificationModel.findByIdAndUpdate(notificationId, {
+      $set: {
+        read: true
+      }
+    });
+  }
+
+  async delete(notificationId: string): Promise<void> {
+    await NotificationModel.findByIdAndDelete(notificationId);
+  }
 }
 const notificationService: NotificationService = new NotificationService();
 export { notificationService };
