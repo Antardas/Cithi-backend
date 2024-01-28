@@ -2,10 +2,12 @@
 @urlPath=api/v1
 # Antar1
 @token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWEyMTRkYmNhNWUyMThiMTBhZjYwODkiLCJ1SWQiOiI5Mjc5MjMwMzk2MTkiLCJlbWFpbCI6ImRldi5hbnRhcmRhczFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJBbnRhcjEiLCJhdmF0YXJDb2xvciI6ImJsYWNrIiwiaWF0IjoxNzA1MTIzNjMxfQ.P6-L38S0ckXLyrs--rXU1HSHNiLUC5NmAm-EAsqNAHc
-@postID=65a21cfbfee817f2ee1faedf
+@postID=65a25374d72adf841693ccce
 @commentID=65a220e3fee817f2ee1faef3
 
-### Add Comment
+@userTo=65a23170197ddd2c70968177
+
+### Add Co
 POST {{baseUrl}}/{{urlPath}}/comments
 Content-Type: application/json
 Accept: application/json
@@ -13,7 +15,7 @@ withCredentials: true
 Authorization: {{token}}
 
 {
-  "userTo": "65a214caca5e218b10af6081",
+  "userTo": "{{userTo}}",
   "postId": "{{postID}}",
   "comment": "My Comment 3",
   "profilePicture": "<cloudinary-user-profile-picture-url>"
