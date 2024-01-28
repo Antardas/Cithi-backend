@@ -5,7 +5,7 @@
 @followeeId=65a23170197ddd2c70968177
 
 
-### Followe User
+### Followe User 
 PUT  {{baseUrl}}/{{urlPath}}/users/follow/{{followeeId}}
 Content-Type: application/json
 Accept: application/json
@@ -54,7 +54,7 @@ Authorization: {{token}}
 
 {
 }
-### Unblock User 
+### Unblock User
 PUT  {{baseUrl}}/{{urlPath}}/users/unblock/{{followeeId}}
 Content-Type: application/json
 Accept: application/json
