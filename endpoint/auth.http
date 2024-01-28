@@ -2,7 +2,7 @@
 @urlPath=api/v1
 
 
-### Signup 
+### Signup
 POST {{baseUrl}}/{{urlPath}}/signup
 Content-Type: application/json
 Accept: application/json
@@ -18,14 +18,14 @@ withCredentials: true
 }
 
 
-### SIGN IN
+### SIGN IN 
 POST {{baseUrl}}/{{urlPath}}/signin
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
 {
-  "username": "Antar_1",
+  "username": "Antar",
   "password": "123456"
 }
 
