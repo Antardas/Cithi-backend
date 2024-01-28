@@ -30,7 +30,7 @@ class NotificationService {
         }
       },
       {
-        $unwind: 'authId'
+        $unwind: '$authId'
       },
       {
         $project: {
@@ -61,6 +61,4 @@ class NotificationService {
   }
 }
 const notificationService: NotificationService = new NotificationService();
-export {
-  notificationService
-}
+export { notificationService };
