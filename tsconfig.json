@@ -36,6 +36,7 @@
       "@/comment/*": ["src/features/comment/*"],
       "@/follower/*": ["src/features/follower/*"],
       "@/notification/*": ["src/features/notification/*"],
+      "@/image/*": ["src/features/image/*"],
       "@/global/*": ["src/shared/global/*"],
       "@/service/*": ["src/shared/services/*"],
       "@/socket/*": ["src/shared/sockets/*"],

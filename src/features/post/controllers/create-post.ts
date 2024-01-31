@@ -10,6 +10,7 @@ import { socketIOPostObject } from '@/socket/post';
 import { ADD_POST_TO_DB, postQueue } from '@/service/queues/post.queue';
 import { uploads } from '@/global/helpers/cloudinary-upload';
 import { BadRequestError } from '@/global/helpers/error-handler';
+import { ADD_IMAGE_TO_DB, imageQueue } from '@/service/queues/image.queue';
 
 const postCache: PostCache = new PostCache();
 
@@ -112,6 +113,11 @@ export class Create {
       value: newPostObj
     });
     // TODO: call image queue to add mongoDB
+    imageQueue.addImageJob(ADD_IMAGE_TO_DB, {
+      key: req.currentUser?.userId,
+      imageId: result.public_id,
+      imgVersion: result.version.toString()
+    });
 
     res.status(HTTP_STATUS.CREATED).json({
       message: 'Post Created with image Successfully'

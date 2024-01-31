@@ -9,6 +9,7 @@ import { IPostDocument } from '@/post/interfaces/post.interface';
 import { UploadApiResponse } from 'cloudinary';
 import { uploads } from '@/global/helpers/cloudinary-upload';
 import { BadRequestError } from '@/global/helpers/error-handler';
+import { ADD_IMAGE_TO_DB, imageQueue } from '@/service/queues/image.queue';
 const postCache: PostCache = new PostCache();
 export class Update {
   @joiValidation(postSchema)
@@ -70,6 +71,11 @@ export class Update {
 
     postQueue.addPostJob(UPDATE_POST_IN_DB, { key: postId, value: updatedPost });
     // call image queue to add image to database
+    imageQueue.addImageJob(ADD_IMAGE_TO_DB, {
+      key: req.currentUser?.userId,
+      imageId: result.public_id,
+      imgVersion: result.version.toString()
+    });
 
     return result;
   }
