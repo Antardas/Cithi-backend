@@ -12,6 +12,7 @@ import { ICommentJob } from '@/comment/interfaces/comment.interface';
 import { IBlockedUserJobData, IFollowerJobData } from '@/follower/interfaces/follower.interface';
 import { INotificationJobData } from '@/notification/interfaces/notification.interface';
 import { IFileImageJobData } from '@/image/interfaces/image.interface';
+import { IMessageData, IMessageJobData } from '@/chat/interfaces/message.interface';
 
 let bullAdapters: BullAdapter[] = [];
 
@@ -26,7 +27,9 @@ type IBaseJobData =
   | IFollowerJobData
   | IBlockedUserJobData
   | INotificationJobData
-  | IFileImageJobData;
+  | IFileImageJobData
+  | IMessageData
+  | IMessageJobData;
 export abstract class BaseQueue {
   public queue: Queue.Queue;
   public log: Logger;
