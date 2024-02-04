@@ -1,10 +1,10 @@
-import { IMessageData, IMessageList, IConversationUsers } from '@/chat/interfaces/message.interface';
+import { IMessageData, IMessageList, IConversationUsers, IGetMessageFromCache } from '@/chat/interfaces/message.interface';
 import { ServerError } from '@/global/helpers/error-handler';
 import { Helpers } from '@/global/helpers/helpers';
 import { config } from '@/root/config';
 import { BaseCache } from '@/service/redis/base.cache';
 import Logger from 'bunyan';
-import { find, findIndex } from 'lodash';
+import { find, findIndex, reverse } from 'lodash';
 const log: Logger = config.createLogger('MessageCache');
 export class MessageCache extends BaseCache {
   constructor() {
@@ -128,6 +128,23 @@ export class MessageCache extends BaseCache {
     }
   }
 
+  async markMessageAsDelete(senderId: string, receiverId: string, messageId: string, type: string): Promise<IMessageData> {
+    await this.createConnection();
+    const { index, receiver, message: messageStr } = await this.getMessage(senderId, receiverId, messageId);
+    const message: IMessageData = Helpers.parseJson(messageStr);
+    if (type === 'me') {
+      message.deleteForMe = true;
+    } else {
+      message.deleteForMe = true;
+      message.deleteForEveryone = true;
+    }
+
+    await this.client.LSET(`messages:${receiver.conversationId}`, index, JSON.stringify(message));
+    const lastMessageStr: string = (await this.client.LINDEX(`messages:${receiver.conversationId}`, index)) as string;
+
+    return Helpers.parseJson(lastMessageStr) as IMessageData;
+  }
+
   private async getMessageUsersList(): Promise<IConversationUsers[]> {
     const chatUsersList: IConversationUsers[] = [];
     const chatUsers = await this.client.LRANGE('chatUsers', 0, -1);
@@ -136,5 +153,20 @@ export class MessageCache extends BaseCache {
       chatUsersList.push(chatUser);
     }
     return chatUsersList;
+  }
+
+  private async getMessage(senderId: string, receiverId: string, messageId: string): Promise<IGetMessageFromCache> {
+    await this.createConnection();
+    const chatList: string[] = await this.client.LRANGE(`chatList:${senderId}`, 0, -1);
+    const receiverStr: string = find(chatList, (chat: string) => chat.includes(receiverId)) as string;
+    const receiver: IMessageList = Helpers.parseJson(receiverStr);
+    const messages: string[] = await this.client.LRANGE(`messages:${receiver.conversationId}`, 0, -1);
+    const messageIndex: number = findIndex(messages, (messageStr) => messageStr.includes(messageId));
+    const message: string = messages[messageIndex];
+    return {
+      index: messageIndex,
+      message,
+      receiver
+    };
   }
 }
