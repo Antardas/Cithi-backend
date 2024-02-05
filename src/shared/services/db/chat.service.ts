@@ -134,5 +134,28 @@ class ChatService {
 
     return messages;
   }
+
+  async markMessageAsDeleted(messageId: string, type: 'me' | 'everyone'): Promise<void> {
+    interface IDeleteQuery {
+      deleteForMe?: boolean;
+      deleteForEveryone?: boolean;
+    }
+    const updateFields: IDeleteQuery = {};
+    if (type === 'me') {
+      updateFields.deleteForMe = true;
+    } else {
+      updateFields.deleteForMe = true;
+      updateFields.deleteForEveryone = true;
+    }
+    await MessageModel.findByIdAndUpdate(
+      messageId,
+      {
+        $set: updateFields
+      },
+      {
+        new: true
+      }
+    );
+  }
 }
 export const chatService: ChatService = new ChatService();
