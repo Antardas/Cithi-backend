@@ -131,12 +131,18 @@ export class MessageCache extends BaseCache {
   async markMessageAsDelete(senderId: string, receiverId: string, messageId: string, type: string): Promise<IMessageData> {
     await this.createConnection();
     const { index, receiver, message: messageStr } = await this.getMessage(senderId, receiverId, messageId);
-    const message: IMessageData = Helpers.parseJson(messageStr);
+    let message: IMessageData = Helpers.parseJson(messageStr);
     if (type === 'me') {
-      message.deleteForMe = true;
+      message = {
+        ...message,
+        deleteForMe: true,
+      };
     } else {
-      message.deleteForMe = true;
-      message.deleteForEveryone = true;
+      message = {
+        ...message,
+        deleteForMe: true,
+        deleteForEveryone: true,
+      };
     }
 
     await this.client.LSET(`messages:${receiver.conversationId}`, index, JSON.stringify(message));
