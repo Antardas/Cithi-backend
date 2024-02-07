@@ -99,7 +99,8 @@ export class Add {
     res.status(HTTP_STATUS.OK).json({
       message: 'Message added',
       data: {
-        conversationId: conversationObjectId.toString()
+        conversationId: conversationObjectId.toString(),
+        messageId: messageObjectId.toString()
       }
     });
   }
