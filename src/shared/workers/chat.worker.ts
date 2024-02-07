@@ -28,6 +28,17 @@ class ChatWorker {
       done(error as Error);
     }
   }
+  async markMessageAsRead(job: Job, done: DoneCallback): Promise<void> {
+    try {
+      const { senderId, receiverId } = job.data;
+      await chatService.markMessageAsRead(senderId, receiverId);
+      job.progress(100);
+      done(null, job.data);
+    } catch (error) {
+      log.error(error);
+      done(error as Error);
+    }
+  }
 }
 
 export const chatWorker: ChatWorker = new ChatWorker();
