@@ -4,7 +4,7 @@ import { Helpers } from '@/global/helpers/helpers';
 import { config } from '@/root/config';
 import { BaseCache } from '@/service/redis/base.cache';
 import Logger from 'bunyan';
-import { find, findIndex, reverse } from 'lodash';
+import { filter, find, findIndex, reverse } from 'lodash';
 const log: Logger = config.createLogger('MessageCache');
 export class MessageCache extends BaseCache {
   constructor() {
@@ -135,18 +135,52 @@ export class MessageCache extends BaseCache {
     if (type === 'me') {
       message = {
         ...message,
-        deleteForMe: true,
+        deleteForMe: true
       };
     } else {
       message = {
         ...message,
         deleteForMe: true,
-        deleteForEveryone: true,
+        deleteForEveryone: true
       };
     }
 
     await this.client.LSET(`messages:${receiver.conversationId}`, index, JSON.stringify(message));
     const lastMessageStr: string = (await this.client.LINDEX(`messages:${receiver.conversationId}`, index)) as string;
+
+    return Helpers.parseJson(lastMessageStr) as IMessageData;
+  }
+  async updateChatMessage(senderId: string, receiverId: string): Promise<IMessageData> {
+    await this.createConnection();
+    const chatList: string[] = await this.client.LRANGE(`chatList:${senderId}`, 0, -1);
+    const receiverStr: string = find(chatList, (chat: string) => chat.includes(receiverId)) as string;
+    const receiver: IMessageList = Helpers.parseJson(receiverStr);
+    const messagesStr: string[] = await this.client.LRANGE(`messages:${receiver.conversationId}`, 0, -1);
+    // const messages: IMessageData[] = [];
+    const unreadMessagesStr: string[] = filter(messagesStr, (message: string) => !(Helpers.parseJson(message) as IMessageData).isRead);
+    const updatesMessagesPromise: Array<Promise<unknown>> = [];
+
+    messagesStr.reduce((acc: Array<Promise<unknown>>, cur: string, curIndex: number) => {
+      const message: IMessageData = Helpers.parseJson(cur);
+      // FIXME Message Read if receiverID and Current Logged user id SAME
+      if (!message.isRead && message.receiverId === senderId) {
+        message.isRead = true;
+        acc.push(this.client.LSET(`messages:${receiver.conversationId}`, curIndex, JSON.stringify(message)));
+      }
+      return acc;
+    }, updatesMessagesPromise);
+
+    // Wait for all update promises to complete
+    await Promise.all(updatesMessagesPromise);
+
+    // for (const [index, item] of unreadMessagesStr.entries()) {
+    //   const unreadMessage: IMessageData = Helpers.parseJson(item);
+    //   unreadMessage.isRead = true;
+    //   // FIXME Here use orignal array not filtered items array
+    //   await this.client.LSET(`messages:${receiver.conversationId}`, index, JSON.stringify(unreadMessage));
+    // }
+
+    const lastMessageStr: string = (await this.client.LINDEX(`messages:${receiver.conversationId}`, -1)) as string;
 
     return Helpers.parseJson(lastMessageStr) as IMessageData;
   }

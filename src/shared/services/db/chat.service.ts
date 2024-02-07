@@ -157,5 +157,32 @@ class ChatService {
       }
     );
   }
+
+  async markMessageAsRead(senderId: Types.ObjectId, receiverId: Types.ObjectId): Promise<void> {
+    await MessageModel.updateMany(
+      {
+        // $or: [
+        //   {
+        //     senderId: senderId,
+        //     receiverId: receiverId,
+        //     isRead: false
+        //   },
+        //   {
+        //     senderId: receiverId,
+        //     receiverId: senderId,
+        //     isRead: false
+        //   }
+        // ]
+        senderId: receiverId,
+        receiverId: senderId,
+        isRead: false
+      },
+      {
+        $set: {
+          isRead: true
+        }
+      }
+    );
+  }
 }
 export const chatService: ChatService = new ChatService();
