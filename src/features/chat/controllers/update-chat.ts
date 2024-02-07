@@ -4,7 +4,7 @@ import HTTP_STATUS from 'http-status-codes';
 import { Request, Response } from 'express';
 import mongoose, { Types } from 'mongoose';
 import { MessageCache } from '@/service/redis/message.cache';
-import { MARK_MESSAGE_AS_READ, chatQueue } from '@/service/queues/chat.queue';
+import { ADD_OR_REMOVE_MESSAGE_REACTION, MARK_MESSAGE_AS_READ, chatQueue } from '@/service/queues/chat.queue';
 import { socketIOChatObject } from '@/socket/chat';
 import { joiValidation } from '@/global/decorators/joi-validation.decorator';
 
@@ -24,6 +24,27 @@ export class Update {
 
     res.status(HTTP_STATUS.OK).json({
       message: 'Messages marked as read'
+    });
+  }
+
+  public async messageReaction(req: Request, res: Response): Promise<void> {
+    const { messageId, reaction, type, conversationId } = req.body;
+    const senderName = `${req.currentUser?.username}`;
+
+    const updatedMessage: IMessageData = await messageCache.updateMessageReaction(conversationId, messageId, reaction, senderName, type);
+
+    socketIOChatObject.emit('ADDED_REACTION', updatedMessage);
+    socketIOChatObject.emit('CHAT_LIST', updatedMessage);
+
+    chatQueue.addChatJob(ADD_OR_REMOVE_MESSAGE_REACTION, {
+      messageId: new mongoose.Types.ObjectId(messageId),
+      senderName,
+      reaction,
+      type
+    });
+
+    res.status(HTTP_STATUS.OK).json({
+      message: 'Messages reaction added'
     });
   }
 }

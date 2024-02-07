@@ -1,10 +1,11 @@
 import { IMessageData, IMessageList, IConversationUsers, IGetMessageFromCache } from '@/chat/interfaces/message.interface';
 import { ServerError } from '@/global/helpers/error-handler';
 import { Helpers } from '@/global/helpers/helpers';
+import { IReaction } from '@/reaction/interfaces/reaction.interface';
 import { config } from '@/root/config';
 import { BaseCache } from '@/service/redis/base.cache';
 import Logger from 'bunyan';
-import { filter, find, findIndex, reverse } from 'lodash';
+import { filter, find, findIndex} from 'lodash';
 const log: Logger = config.createLogger('MessageCache');
 export class MessageCache extends BaseCache {
   constructor() {
@@ -181,6 +182,38 @@ export class MessageCache extends BaseCache {
     // }
 
     const lastMessageStr: string = (await this.client.LINDEX(`messages:${receiver.conversationId}`, -1)) as string;
+
+    return Helpers.parseJson(lastMessageStr) as IMessageData;
+  }
+
+  async updateMessageReaction(
+    conversationId: string,
+    messageId: string,
+    reaction: string,
+    senderName: string,
+    type: 'add' | 'remove'
+  ): Promise<IMessageData> {
+    await this.createConnection();
+    const messagesStr: string[] = await this.client.LRANGE(`messages:${conversationId}`, 0, -1);
+    const messageIndex: number = findIndex(messagesStr, (item: string) => item.includes(messageId));
+    if (messageIndex !== -1) {
+      const message: IMessageData = Helpers.parseJson(messagesStr[messageIndex]);
+      const reactions: IReaction[] = message.reaction.filter((item) => item.senderName !== senderName);
+      if (type === 'add') {
+        reactions.push({
+          senderName,
+          type: reaction
+        });
+        message.reaction = reactions;
+        await this.client.LSET(`messages:${conversationId}`, messageIndex, JSON.stringify(message));
+      } else {
+        message.reaction = reactions;
+        await this.client.LSET(`messages:${conversationId}`, messageIndex, JSON.stringify(message));
+      }
+    }
+
+
+    const lastMessageStr: string = (await this.client.LINDEX(`messages:${conversationId}`, -1)) as string;
 
     return Helpers.parseJson(lastMessageStr) as IMessageData;
   }

@@ -1,7 +1,8 @@
 import { IConversationDocument } from '@/chat/interfaces/conversation.interface';
-import { IMessageData } from '@/chat/interfaces/message.interface';
+import { IMessageData, IMessageDocument } from '@/chat/interfaces/message.interface';
 import { ConversationModel } from '@/chat/models/conversation.schema';
 import { MessageModel } from '@/chat/models/message.schema';
+import { IReaction } from '@/reaction/interfaces/reaction.interface';
 import { Types } from 'mongoose';
 
 class ChatService {
@@ -183,6 +184,38 @@ class ChatService {
         }
       }
     );
+  }
+
+  async updateMessageReaction(messageId: Types.ObjectId, senderName: string, reaction: string, type: 'add' | 'remove'): Promise<void> {
+    if (type === 'add') {
+      // await MessageModel.findByIdAndUpdate(messageId, {
+      //   $push: {
+      //     reaction: {
+      //       senderName,
+      //       type: reaction
+      //     }
+      //   }
+      // });
+      const message: IMessageDocument | null = await MessageModel.findById(messageId);
+      if (!message) {
+        return;
+      }
+      const reactions: IReaction[] = message.reaction.filter((item) => item.senderName !== senderName);
+      reactions.push({
+        senderName,
+        type: reaction
+      });
+      message.reaction = reactions;
+      await message.save();
+    } else if (type === 'remove') {
+      await MessageModel.findByIdAndUpdate(messageId, {
+        $pull: {
+          reaction: {
+            senderName
+          }
+        }
+      });
+    }
   }
 }
 export const chatService: ChatService = new ChatService();

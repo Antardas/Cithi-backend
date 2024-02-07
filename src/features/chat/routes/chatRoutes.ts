@@ -17,6 +17,7 @@ class ChatRoutes {
     this.router.post('/chat/message/users', authMiddleware.checkAuthentication, Add.prototype.addMessageUsers);
     this.router.post('/chat/message/remove-users', authMiddleware.checkAuthentication, Add.prototype.removeMessageUsers);
     this.router.put('/chat/message/mark-read', authMiddleware.checkAuthentication, Update.prototype.markMessageAsRead);
+    this.router.put('/chat/message/reaction', authMiddleware.checkAuthentication, Update.prototype.messageReaction);
     this.router.delete(
       '/chat/message/:messageId/:senderId/:receiverId/:type',
       authMiddleware.checkAuthentication,

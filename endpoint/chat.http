@@ -2,9 +2,10 @@
 @urlPath=api/v1
 # Antar1
 @token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWE3NmYwMGUzMjYwYjRmMmQxNWVkMjciLCJ1SWQiOiIyMjY3NTE0ODYyNDYiLCJlbWFpbCI6ImRldi5hbnRhcmRhczFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJBbnRhcl8xIiwiYXZhdGFyQ29sb3IiOiJibGFjayIsImlhdCI6MTcwNjg1ODMzNX0.J_wPc0VdGHpYjPZsUNtqjKvn_jTWzD9ASECN28djPUY
-@messageId=65c067ccbfaa63d1ca3f2a7a
+@messageId=65c12b75860bacbfb0ca0f67
 @receiverId=65a23170197ddd2c70968177
 @senderId=65a76f00e3260b4f2d15ed27
+@conversationId=65bc9d8772ca4ba50e3c5580
 ### Add Chat
 POST {{baseUrl}}/{{urlPath}}/chat/message
 Content-Type: application/json
@@ -90,7 +91,7 @@ Authorization: {{token}}
 {
 }
 
-### Mark Message as read 
+### Mark Message as read
 PUT {{baseUrl}}/{{urlPath}}/chat/message/mark-read/
 Content-Type: application/json
 Accept: application/json
@@ -100,4 +101,19 @@ Authorization: {{token}}
 {
   "sender": "{{senderId}}",
   "receiver":"{{receiverId}}"
+}
+
+
+### Add Message Reaction  
+PUT {{baseUrl}}/{{urlPath}}/chat/message/reaction
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+Authorization: {{token}}
+
+{
+  "conversationId":"{{conversationId}}",
+  "messageId": "{{messageId}}",
+  "reaction": "happy",
+  "type": "remove"
 }
