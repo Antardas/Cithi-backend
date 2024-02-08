@@ -1,5 +1,6 @@
 import { authRoutes } from '@/auth/routes/authRoutes';
 import { currentUserRoutes } from '@/auth/routes/currentRoute';
+import { chatRoutes } from '@/chat/routes/chatRoutes';
 import { commentRoutes } from '@/comment/routes/comment-route';
 import { followerRoutes } from '@/follower/routes/followerRoutes';
 import { authMiddleware } from '@/global/helpers/auth-middleware';
@@ -23,6 +24,7 @@ export default (app: Application) => {
     app.use(BASE_PATH, authMiddleware.verify, followerRoutes.routes());
     app.use(BASE_PATH, authMiddleware.verify, notificationRoutes.routes());
     app.use(BASE_PATH, authMiddleware.verify, imageRoutes.routes());
+    app.use(BASE_PATH, authMiddleware.verify, chatRoutes.routes());
   };
 
   routes();

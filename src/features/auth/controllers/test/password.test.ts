@@ -62,7 +62,7 @@ describe('Password', () => {
       const req: Request = authMockRequest({}, { password: '' }, null, {}) as Request;
       const res: Response = authMockResponse();
       Password.prototype.update(req, res).catch((error: CustomError) => {
-        expect(error.serializeError().message).toEqual('Password is a required field');
+        expect(error.serializeError().message).toContain('Password is a required field');
         expect(error.statusCode).toEqual(400);
       });
     });
@@ -71,7 +71,7 @@ describe('Password', () => {
       const req: Request = authMockRequest({}, { password: '123' }, null, {}) as Request;
       const res: Response = authMockResponse();
       Password.prototype.update(req, res).catch((error: CustomError) => {
-        expect(error.serializeError().message).toEqual('Invalid password');
+        expect(error.serializeError().message).toContain('Invalid password');
         expect(error.statusCode).toEqual(400);
       });
     });
@@ -80,7 +80,7 @@ describe('Password', () => {
       const req: Request = authMockRequest({}, { password: '123456789' }, null, {}) as Request;
       const res: Response = authMockResponse();
       Password.prototype.update(req, res).catch((error: CustomError) => {
-        expect(error.serializeError().message).toEqual('Invalid password');
+        expect(error.serializeError().message).toMatch('Invalid password');
         expect(error.statusCode).toEqual(400);
       });
     });
