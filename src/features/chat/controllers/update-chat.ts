@@ -34,7 +34,7 @@ export class Update {
     const updatedMessage: IMessageData = await messageCache.updateMessageReaction(conversationId, messageId, reaction, senderName, type);
 
     socketIOChatObject.emit('ADDED_REACTION', updatedMessage);
-    socketIOChatObject.emit('CHAT_LIST', updatedMessage);
+    // socketIOChatObject.emit('CHAT_LIST', updatedMessage);
 
     chatQueue.addChatJob(ADD_OR_REMOVE_MESSAGE_REACTION, {
       messageId: new mongoose.Types.ObjectId(messageId),
