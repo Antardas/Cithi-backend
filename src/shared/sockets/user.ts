@@ -4,7 +4,7 @@ import { Server, Socket } from 'socket.io';
 export let socketIoUserObject: Server;
 export const connectedUsersMap: Map<string, string> = new Map();
 
-const users: string[] = [];
+let users: string[] = [];
 export class SocketIoUserHandler {
   private io: Server;
   constructor(io: Server) {
@@ -23,6 +23,8 @@ export class SocketIoUserHandler {
 
       socket.on('SETUP', (data: ILogin) => {
         this.addClientToMap(data.userId, socket.id);
+        this.addUser(data.userId);
+        this.io.emit('USER_ONLINE', users);
       });
 
       socket.on('DISCONNECT', () => {
@@ -31,9 +33,10 @@ export class SocketIoUserHandler {
     });
   }
 
-  private addClientToMap(userId: string, socketId: string): void {
-    if (!connectedUsersMap.has(userId)) {
-      connectedUsersMap.set(userId, socketId);
+  private addClientToMap(username: string, socketId: string): void {
+    if (!connectedUsersMap.has(username)) {
+      connectedUsersMap.set(username, socketId);
+      // addUser.
     }
   }
 
@@ -45,6 +48,20 @@ export class SocketIoUserHandler {
 
       connectedUsersMap.delete(disconnectedUser[0]);
       // TODO: send event to the client
+      this.removeUser(disconnectedUser[0]);
+      this.io.emit('USER_ONLINE', users);
+    }
+  }
+
+  private addUser(username: string): void {
+    users.push(username);
+    users = [...new Set(users)];
+  }
+
+  private removeUser(username: string): void {
+    const userIndex: number = users.findIndex((user) => user === username);
+    if (userIndex >= 0) {
+      delete users[userIndex];
     }
   }
 }
