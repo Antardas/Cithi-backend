@@ -24,7 +24,7 @@ const authSchema: Schema = new Schema(
     }
   }
 );
-
+// NOTE: it will call only when save() method called
 authSchema.pre('save', async function (this: IAuthDocument, next: () => void) {
   // if (this.isModified('password')) {
 

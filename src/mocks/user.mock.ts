@@ -50,7 +50,7 @@ export const existingUser = {
   bgImageVersion: '',
   bgImageId: '',
   profilePicture: 'http://place-hold.it/500x500',
-  _id: '60263f14648fed5246e322d9',
+  _id: '60263f14648fed5246e322d3',
   uId: '1621613119252066',
   username: 'Devant',
   email: 'dev.antardas@gmail.com',

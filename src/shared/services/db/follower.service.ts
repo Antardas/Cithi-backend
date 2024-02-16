@@ -1,7 +1,7 @@
 import { UserCache } from '@/service/redis/user.cache';
 import { COMMENT_EMAIL, FOLLOWING_EMAIL, emailQueue } from '@/service/queues/email.queue';
 import { FollowerModel } from '@/follower/models/follower.model';
-import mongoose, { Query } from 'mongoose';
+import mongoose, { Query, mongo } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { IFollowerData, IFollowerDocument } from '@/follower/interfaces/follower.interface';
 import { UserModel } from '@/user/models/user.model';
@@ -61,7 +61,10 @@ class FollowerService {
       }
     ]);
 
-    const [users, user]: [mongoose.mongo.BulkWriteResult, IUserDocument | null] = await Promise.all([usersPromise, userCache.getUserFromCache(followeeId)]);
+    const [users, user]: [mongoose.mongo.BulkWriteResult, IUserDocument | null] = await Promise.all([
+      usersPromise,
+      userCache.getUserFromCache(followeeId)
+    ]);
 
     if (!user) {
       throw new NotFoundError('Followee not found');
@@ -245,6 +248,24 @@ class FollowerService {
       }
     ]);
     return followers;
+  }
+
+  public async getFollowingUsersIds(user: string): Promise<string[]> {
+    const followee = await FollowerModel.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(user)
+        }
+      },
+      {
+        $project: {
+          followeeId: 1,
+          _id: 1
+        }
+      }
+    ]);
+
+    return followee.map((item) => item.followeeId.toString());
   }
 }
 export const followerService: FollowerService = new FollowerService();

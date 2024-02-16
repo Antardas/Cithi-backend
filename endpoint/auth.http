@@ -9,9 +9,9 @@ Accept: application/json
 withCredentials: true
 
 {
-  "username": "Antar_3",
+  "username": "Antar_4",
   "password": "123456",
-  "email": "dev.antardas3@gmail.com",
+  "email": "dev.antardas4@gmail.com",
   "avatarImage": {{base64}},
   "avatarColor": "black"
 
@@ -25,7 +25,7 @@ Accept: application/json
 withCredentials: true
 
 {
-  "username": "Antar_1",
+  "username": "Antar",
   "password": "123456"
 }
 

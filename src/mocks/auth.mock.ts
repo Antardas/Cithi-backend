@@ -1,11 +1,12 @@
 import { AuthPayload, IAuthDocument } from '@/auth/interfaces/auth.interface';
 import { Response } from 'express';
 
-export const authMockRequest = (cookieData: IJWT, body: IAuthMock, currentUser: AuthPayload | null, params: unknown) => ({
+export const authMockRequest = (cookieData: IJWT, body: IAuthMock, currentUser: AuthPayload | null, params: unknown, query: IQuery | unknown) => ({
   cookies: cookieData,
   body,
   params,
-  currentUser
+  currentUser,
+  query
 });
 
 export const authMockResponse = (): Response => {
@@ -19,6 +20,9 @@ export const authMockResponse = (): Response => {
 
 export interface IJWT {
   token?: string;
+}
+export interface IQuery {
+  page?: string;
 }
 
 export interface IAuthMock {

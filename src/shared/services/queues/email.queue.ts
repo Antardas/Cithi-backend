@@ -5,6 +5,7 @@ export const COMMENT_EMAIL: string = 'COMMENT_EMAIL';
 export const FOLLOWING_EMAIL: string = 'FOLLOWING_EMAIL';
 export const REACTION_EMAIL: string = 'REACTION_EMAIL';
 export const RECEIVED_MESSAGE_EMAIL: string = 'RECEIVED_MESSAGE_EMAIL';
+export const CHANGE_PASSWORD: string = 'CHANGE_PASSWORD';
 class EmailQueue extends BaseQueue {
   constructor() {
     super('emails');
