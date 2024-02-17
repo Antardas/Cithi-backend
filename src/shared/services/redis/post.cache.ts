@@ -32,6 +32,8 @@ export class PostCache extends BaseCache {
       commentCount,
       imgVersion,
       imgId,
+      videoId,
+      videoVersion,
       reactions,
       createAt
     } = createdPost;
@@ -90,7 +92,9 @@ export class PostCache extends BaseCache {
       reactions: `${JSON.stringify(reactions)}`,
       imgVersion: `${imgVersion}`,
       imgId: `${imgId}`,
-      createAt: `${createAt}`
+      createAt: `${createAt}`,
+      videoId: `${videoId}`,
+      videoVersion: `${videoVersion}`
     };
     try {
       if (!this.client.isOpen) {
@@ -193,6 +197,38 @@ export class PostCache extends BaseCache {
       throw new ServerError('Server error. Try Again!!');
     }
   }
+
+  public async getPostsWithVideoFromCache(key: string, start: number, end: number): Promise<IPostDocument[]> {
+    try {
+      if (!this.client.isOpen) {
+        await this.client.connect();
+      }
+      const reply: string[] = await this.client.ZRANGE(key, start, end, { REV: true });
+      const multi: ReturnType<typeof this.client.multi> = this.client.multi();
+
+      for (const value of reply) {
+        multi.HGETALL(`posts:${value}`);
+      }
+
+      const replies: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
+      const postWithVideoReplies: IPostDocument[] = [];
+
+      for (const post of replies as IPostDocument[]) {
+        if ((post.videoId && post.videoVersion)) {
+          post.commentCount = Helpers.parseJson(`${post.commentCount}`) as number;
+          post.reactions = Helpers.parseJson(`${post.reactions}`) as IReactions;
+          post.createAt = new Date(Helpers.parseJson(`${post.createAt}`));
+          postWithVideoReplies.push(post);
+        }
+      }
+
+      log.info(reply);
+      return postWithVideoReplies;
+    } catch (error) {
+      log.error(error);
+      throw new ServerError('Server error. Try Again!!');
+    }
+  }
   public async getUserPostsFromCache(key: string, uId: number): Promise<IPostDocument[]> {
     try {
       if (!this.client.isOpen) {
@@ -255,7 +291,7 @@ export class PostCache extends BaseCache {
   }
 
   public async updatePostInCache(key: string, updatedPost: IPostDocument): Promise<IPostDocument> {
-    const { post, bgColor, feelings, privacy, gifUrl, imgId, imgVersion, profilePicture } = updatedPost;
+    const { post, bgColor, feelings, privacy, gifUrl, imgId, imgVersion, profilePicture, videoId,videoVersion } = updatedPost;
 
     const firstList: string[] = [
       'post',
@@ -279,7 +315,9 @@ export class PostCache extends BaseCache {
       gifUrl: `${gifUrl}`,
       profilePicture: `${profilePicture}`,
       imgId: `${imgId}`,
-      imgVersion: `${imgVersion}`
+      imgVersion: `${imgVersion}`,
+      videoId: `${videoId}`,
+      videoVersion: `${videoVersion}`
     };
 
     try {

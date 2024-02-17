@@ -17,6 +17,10 @@ class PostService {
       postQuery = {
         $or: [{ imgId: { $ne: '' } }, { gifUrl: { $ne: '' } }]
       };
+    } else if (query?.videoId) {
+      postQuery = {
+        $or: [{ videoId: { $ne: '' } }]
+      };
     } else {
       postQuery = query;
     }
