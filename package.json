@@ -20,6 +20,7 @@
 		"@bull-board/express": "^5.7.1",
 		"@bull-board/ui": "^5.7.1",
 		"@socket.io/redis-adapter": "^8.2.1",
+		"axios": "^1.6.7",
 		"bcryptjs": "^2.4.3",
 		"bull": "^4.10.4",
 		"bullmq": "^4.7.0",
