@@ -58,4 +58,30 @@ export class Get {
       posts
     });
   }
+
+  public async postsWithVideo(req: Request, res: Response): Promise<void> {
+    const { page } = req.params;
+    const skip: number = (parseInt(page, 10) - 1) * PAGE_SIZE;
+    const limit: number = PAGE_SIZE * parseInt(page, 10);
+    const newSkip: number = skip === 0 ? skip : skip + 1;
+    let posts: IPostDocument[] = [];
+
+    const cachedPost: IPostDocument[] = await postCache.getPostsWithVideoFromCache('post', newSkip, limit);
+    posts = cachedPost.length
+      ? cachedPost
+      : await postService.getPosts(
+          {
+            videoId: '$ne',
+          },
+          skip,
+          limit,
+          {
+            createdAt: -1
+          }
+        );
+    res.status(HTTP_STATUS.OK).json({
+      message: 'All Posts with video',
+      posts
+    });
+  }
 }
