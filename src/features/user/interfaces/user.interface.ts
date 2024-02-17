@@ -80,7 +80,7 @@ export interface IUserJob {
   keyOne?: string;
   keyTwo?: string;
   key?: string;
-  value?: string | INotificationSettings | IUserDocument;
+  value?: string | INotificationSettings | IUserDocument | ISocialLinks | IBasicInfo;
 }
 
 export interface IEmailJob {

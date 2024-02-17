@@ -1,0 +1,109 @@
+@baseUrl=http://localhost:5000
+@urlPath=api/v1
+
+
+### Get User data and folllwers
+GET {{baseUrl}}/{{urlPath}}/users?page=1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+
+}
+### Get Logged in User
+GET {{baseUrl}}/{{urlPath}}/users/me
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+
+}
+### Get User By id
+GET {{baseUrl}}/{{urlPath}}/users/65a76f00e3260b4f2d15ed27
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+
+}
+### Get User By id
+GET {{baseUrl}}/{{urlPath}}/users/65a23170197ddd2c70968177/Antar/235423403750
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+
+}
+
+### Get User Suggestion
+GET {{baseUrl}}/{{urlPath}}/users/suggestions
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+
+}
+
+
+### Search User
+GET {{baseUrl}}/{{urlPath}}/users/search/Antar_4
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+
+}
+
+### Update User Password
+PUT {{baseUrl}}/{{urlPath}}/users/password
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "currentPassword": "1234568",
+  "newPassword": "1234567",
+  "confirmPassword": "1234567"
+}
+### Update Basic Infor Password
+PUT {{baseUrl}}/{{urlPath}}/users/basic-info
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "quote": "Always Belive on Hard work not smart work",
+  "work": "Software Engineer",
+  "school": "raozan school",
+  "location": "chittagong"
+}
+### Update User Password
+PUT {{baseUrl}}/{{urlPath}}/users/social-links
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+"facebook": "https://facebook.com/facebooknai",
+"instagram": null
+
+}
+
+### Update User sETTINGH
+PUT {{baseUrl}}/{{urlPath}}/users/notification-setting
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "comments":  false,
+  "follows": false,
+  "messages": false,
+  "reactions": false
+}

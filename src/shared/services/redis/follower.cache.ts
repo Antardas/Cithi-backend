@@ -10,18 +10,44 @@ import { Helpers } from '@/global/helpers/helpers';
 
 const log: Logger = config.createLogger('FollowerCache');
 const userCache: UserCache = new UserCache();
-
+/**
+ * FollowerCache
+ *
+ * This class is responsible for handling caching operations related to followers in the application.
+ * It extends the BaseCache class and implements methods to interact with Redis cache for storing follower-related data.
+ */
 export class FollowerCache extends BaseCache {
+  /**
+   * Constructor
+   *
+   * Initializes the FollowerCache instance by calling the constructor of the BaseCache class.
+   */
   constructor() {
     super('followerCache');
   }
 
+  /**
+   * createConnection
+   *
+   * Establishes a connection to the Redis server if one is not already open.
+   * This is a private method used internally for connection management.
+   *
+   * @returns Promise<void>
+   */
   private async createConnection(): Promise<void> {
     if (!this.client.isOpen) {
       return this.client.connect();
     }
   }
-
+  /**
+   * saveFollowerToCache
+   *
+   * Saves follower data to the cache with the provided key and value.
+   *
+   * @param key - The key under which the follower data will be stored.
+   * @param value - The value (follower data) to be stored in the cache.
+   * @returns Promise<void>
+   */
   public async saveFollowerToCache(key: string, value: string): Promise<void> {
     try {
       await this.createConnection();
@@ -43,7 +69,16 @@ export class FollowerCache extends BaseCache {
       throw new ServerError('Server error. Try Again');
     }
   }
-
+  /**
+   * updateFollowerCountInCache
+   *
+   * Updates the follower count for a user in the cache.
+   *
+   * @param userId - The ID of the user whose follower count will be updated.
+   * @param prop - The property representing the follower count.
+   * @param value - The value by which the follower count will be incremented.
+   * @returns Promise<void>
+   */
   public async updateFollowerCountInCache(userId: string, prop: string, value: number): Promise<void> {
     try {
       await this.createConnection();

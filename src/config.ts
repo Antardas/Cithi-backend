@@ -21,6 +21,7 @@ class Config {
   public BREVO_API_KEY: string | undefined;
   public BREVO_HOST: string | undefined;
   public BREVO_PORT: string | undefined;
+  public EC2_URL: string | undefined;
   constructor() {
     this.DATABASE_URL = process.env.DATABASE_URL || this.DEFAULT_DATABASE_URL;
     this.JWT_TOKEN = process.env.JWT_TOKEN || 'DEFAULT_JWT_TOKEN';
@@ -37,6 +38,7 @@ class Config {
     this.BREVO_API_KEY = process.env.BREVO_API_KEY;
     this.BREVO_HOST = process.env.BREVO_HOST;
     this.BREVO_PORT = process.env.BREVO_PORT;
+    this.EC2_URL = process.env.EC2_URL || '';
   }
 
   public createLogger(name: string): bunyan {

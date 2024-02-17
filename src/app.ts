@@ -17,6 +17,5 @@ class Application {
     config.cloudinaryConfig();
   }
 }
-
 const application: Application = new Application();
 application.initialize();
