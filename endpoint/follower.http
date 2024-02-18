@@ -1,0 +1,65 @@
+@baseUrl=http://localhost:5000
+@urlPath=api/v1
+# Antar_1
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWEyMzMwMDYwMjhlMDA4YjVhOWRiZWIiLCJ1SWQiOiI3MTM4NDA3ODk0OTAiLCJlbWFpbCI6ImRldi5hbnRhcmRhczFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJBbnRhcl8xIiwiYXZhdGFyQ29sb3IiOiJibGFjayIsImlhdCI6MTcwNTE3MDMyMX0.G-w0aY4FZX43RmCInHsHziYzdNalQm7TYxbC0dH_ygw
+@followeeId=65a23170197ddd2c70968177
+
+
+### Followe User 
+PUT  {{baseUrl}}/{{urlPath}}/users/follow/{{followeeId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+Authorization: {{token}}
+
+{
+}
+
+### Unfolllow User
+PUT  {{baseUrl}}/{{urlPath}}/users/unfollow/{{followeeId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+Authorization: {{token}}
+
+{
+}
+
+### Get All Followings
+GET  {{baseUrl}}/{{urlPath}}/users/followings
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+Authorization: {{token}}
+
+{
+}
+
+### Get All Followers
+GET {{baseUrl}}/{{urlPath}}/users/followers
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+Authorization: {{token}}
+
+{
+}
+
+### Block User
+PUT  {{baseUrl}}/{{urlPath}}/users/block/{{followeeId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+Authorization: {{token}}
+
+{
+}
+### Unblock User
+PUT  {{baseUrl}}/{{urlPath}}/users/unblock/{{followeeId}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+Authorization: {{token}}
+
+{
+}

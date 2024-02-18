@@ -1,0 +1,66 @@
+@baseUrl=http://localhost:5000
+@urlPath=api/v1
+# Antar1
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWEyMTRkYmNhNWUyMThiMTBhZjYwODkiLCJ1SWQiOiI5Mjc5MjMwMzk2MTkiLCJlbWFpbCI6ImRldi5hbnRhcmRhczFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJBbnRhcjEiLCJhdmF0YXJDb2xvciI6ImJsYWNrIiwiaWF0IjoxNzA1MTIzNjMxfQ.P6-L38S0ckXLyrs--rXU1HSHNiLUC5NmAm-EAsqNAHc
+@postID=65a25386d72adf841693ccd2
+@commentID=65a220e3fee817f2ee1faef3
+@userTo=65a23170197ddd2c70968177
+
+### new add reaction
+POST {{baseUrl}}/{{urlPath}}/post/reaction
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userTo": "{{userTo}}",
+  "postId": "{{postID}}",
+  "type": "love",
+  "profilePicture": "<cloudinary-user-profile-picture-url>",
+  "postReactions": "wow",
+  "previousReaction": "",
+  "postReactions": {"like": 0,"love": 0,"happy": 0,"sad": 0,"wow": 1,"angry": 0}
+}
+
+### update Reaction (if previousReaction exist that means it will updat the reaction)
+
+POST {{baseUrl}}/{{urlPath}}/post/reaction
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userTo": "{{userTo}}",
+  "postId":"{{postID}}",
+  "type": "love",
+  "previousReaction": "wow",
+  "postReactions": {"like": 0,"love": 1,"happy": 0,"sad": 0,"wow": 0,"angry": 0}
+}
+
+
+### Delete Reaction
+DELETE {{baseUrl}}/{{urlPath}}/post/reaction/654dee80dcbd3f94546f3bc1/wow/{"angry":0,"like":0,"love":0,"happy":0,"sad":0,"wow":0}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+### Get Single Post Reaction
+GET {{baseUrl}}/{{urlPath}}/post/reactions/654dee80dcbd3f94546f3bc1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+### Get Single Post Reaction via Username
+GET {{baseUrl}}/{{urlPath}}/post/single/reaction/Devant/654dee80dcbd3f94546f3bc1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+### Get Single Post Reaction via Username
+GET {{baseUrl}}/{{urlPath}}/post/single/reactions/Devant
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+#

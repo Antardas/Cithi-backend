@@ -45,6 +45,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+.vscode
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
@@ -78,6 +79,7 @@ web_modules/
 
 # dotenv environment variable files
 .env
+.env.production
 .env.development.local
 .env.test.local
 .env.production.local
@@ -142,3 +144,6 @@ dist
 .svelte-kit
 
 # End of https://www.toptal.com/developers/gitignore/api/node
+
+build
+volume

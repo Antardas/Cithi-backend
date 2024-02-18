@@ -4,16 +4,24 @@ import cors from 'cors';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import cookieSession from 'cookie-session';
+import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import HTTP_STATUS from 'http-status-codes';
 import 'express-async-errors';
+import Logger from 'bunyan';
 import { Server } from 'socket.io';
 import { createClient } from 'redis';
+import apiStatus from 'swagger-stats';
+import { SocketIoUserHandler } from '@/socket/user';
 import { createAdapter } from '@socket.io/redis-adapter';
-import { config } from './config';
-import applicationRoutes from './routes';
-import { CustomError, IErrorResponse } from './shared/global/helpers/error-handler';
-import Logger from 'bunyan';
+import applicationRoutes from '@/root/routes';
+import { config } from '@/root/config';
+import { CustomError, IErrorResponse } from '@/global/helpers/error-handler';
+import { SocketIOPostHandler } from '@/socket/post';
+import { SocketIOFollowerHandler } from '@/socket/follower';
+import { SocketIONotificationHandler } from '@/socket/notification';
+import { SocketIOImageHandler } from '@/socket/image';
+import { SocketIOChatHandler } from '@/socket/chat';
 
 const SERVER_PORT = 5000;
 const log: Logger = config.createLogger('server');
@@ -26,12 +34,14 @@ export class ChattyServer {
   public start(): void {
     this.securityMiddleware(this.app);
     this.standardMiddleware(this.app);
-    this.globalErrorHandler(this.app);
+    this.apiMonitoring(this.app);
     this.routeMiddleware(this.app);
+    this.globalErrorHandler(this.app);
     this.startServer(this.app);
   }
 
   private securityMiddleware(app: Application): void {
+    app.use(cookieParser());
     app.use(
       cookieSession({
         name: 'session',
@@ -45,7 +55,7 @@ export class ChattyServer {
     app.use(helmet());
     app.use(
       cors({
-        origin: config.CLIENT_URL, // TODO: make it actual origin in production
+        origin: [config.CLIENT_URL, '*'] as string[], // TODO: make it actual origin in production
         credentials: true,
         optionsSuccessStatus: 200,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
@@ -61,6 +71,14 @@ export class ChattyServer {
 
   private routeMiddleware(app: Application): void {
     applicationRoutes(app);
+  }
+
+  private apiMonitoring(app: Application) {
+    app.use(
+      apiStatus.getMiddleware({
+        uriPath: '/api-monitoring'
+      })
+    );
   }
 
   private globalErrorHandler(app: Application): void {
@@ -79,6 +97,9 @@ export class ChattyServer {
   }
 
   private async startServer(app: Application): Promise<void> {
+    if (!config.JWT_TOKEN) {
+      throw new Error('JWT_TOKEN did not provided');
+    }
     try {
       const httpServer: http.Server = new http.Server(app);
       const socketIO: Server = await this.createSocketIO(httpServer);
@@ -89,28 +110,47 @@ export class ChattyServer {
     }
   }
 
+  /**
+   * Creates and configures a Socket.IO server to handle connections on the given HTTP server.
+   * @param httpServer - The HTTP server instance to attach the Socket.IO server to.
+   * @returns A Promise resolving to the configured Socket.IO server instance.
+   */
   private async createSocketIO(httpServer: http.Server): Promise<Server> {
+    // Create a new Socket.IO server instance with CORS configuration.
     const io: Server = new Server(httpServer, {
       cors: {
-        origin: config.CLIENT_URL,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+        origin: config.CLIENT_URL, // Allow connections from the specified client URL.
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] // Allow specified HTTP methods.
       }
     });
 
+    // Create a Redis pub/sub client for handling socket.io scaling across multiple server instances.
     const pubClient = createClient({
       url: config.REDIS_HOST
     });
 
+    // Create a duplicate Redis client for subscribing to channels.
     const subClient = pubClient.duplicate();
+
+    // Handle errors for both pubClient and subClient.
+    pubClient.on('error', (err) => {
+      log.error(err.message);
+    });
+
+    subClient.on('error', (err) => {
+      log.error(err.message);
+    });
 
     await Promise.all([pubClient.connect(), subClient.connect()]);
 
+    // Configure Socket.IO to use the Redis adapter for handling scaling across multiple instances.
     io.adapter(createAdapter(pubClient, subClient));
 
     return io;
   }
 
   private startHttpServer(httpServer: http.Server): void {
+    log.info(`Worker with process id of ${process.pid} has started...`);
     log.info(`Server has started  with process ${process.pid}`);
 
     httpServer.listen(SERVER_PORT, () => {
@@ -118,5 +158,19 @@ export class ChattyServer {
     });
   }
 
-  private socketIOConnections(_io: Server): void {}
+  private socketIOConnections(io: Server): void {
+    const postSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io);
+    const socketIOFollowerHandler: SocketIOFollowerHandler = new SocketIOFollowerHandler(io);
+    const socketIoUserHandler: SocketIoUserHandler = new SocketIoUserHandler(io);
+    const socketIoChatHandler: SocketIOChatHandler = new SocketIOChatHandler(io);
+    const socketIoNotificationHandler: SocketIONotificationHandler = new SocketIONotificationHandler();
+    const socketIOImageHandler: SocketIOImageHandler = new SocketIOImageHandler();
+
+    postSocketHandler.listen();
+    socketIOFollowerHandler.listen();
+    socketIoUserHandler.handler();
+    socketIoChatHandler.listen();
+    socketIoNotificationHandler.listen(io);
+    socketIOImageHandler.listen(io);
+  }
 }
