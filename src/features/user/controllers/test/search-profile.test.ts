@@ -1,9 +1,8 @@
 import { Search } from '@/user/controllers/search-profile';
-import { chatMockRequest, chatMockResponse } from '@/root/mocks/chat.mock';
 import { userService } from '@/service/db/user.service';
 import { Request, Response } from 'express';
-import { searchedUserMock } from '@/root/mocks/user.mock';
-import { authMockRequest, authMockResponse, authUserPayload } from '@/root/mocks/auth.mock';
+import { searchedUserMock, userMockRequest, userMockResponse } from '@/root/mocks/user.mock';
+import { authUserPayload } from '@/root/mocks/auth.mock';
 
 describe('Search', () => {
   beforeEach(() => {
@@ -17,8 +16,8 @@ describe('Search', () => {
 
   describe('user', () => {
     it('should send correct json response if searched user exist', async () => {
-      const req: Request = authMockRequest({}, {}, authUserPayload, { query: 'Danny' }, {}) as unknown as Request;
-      const res: Response = chatMockResponse();
+      const req: Request = userMockRequest({}, {}, authUserPayload, { query: 'Danny' }, {}) as unknown as Request;
+      const res: Response = userMockResponse();
       jest.spyOn(userService, 'searchUsers').mockResolvedValue([searchedUserMock]);
 
       await Search.prototype.user(req, res);
@@ -30,8 +29,8 @@ describe('Search', () => {
     });
 
     it('should send correct json response if searched user does not exist', async () => {
-      const req: Request = authMockRequest({}, {}, authUserPayload, { query: 'DannyBoy' }, {}) as Request;
-      const res: Response = authMockResponse();
+      const req: Request = userMockRequest({}, {}, authUserPayload, { query: 'DannyBoy' }, {}) as Request;
+      const res: Response = userMockResponse();
       jest.spyOn(userService, 'searchUsers').mockResolvedValue([]);
 
       await Search.prototype.user(req, res);
