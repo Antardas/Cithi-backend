@@ -4,14 +4,19 @@
 	"description": "",
 	"main": "app.js",
 	"scripts": {
+		"start": "NODE_ENV=production pm2 start ./build/app.js -i 5 --attach --watch | npx bunyan",
+		"start:dev": "NODE_ENV=production pm2 start ./build/src/app.js -i 5 --watch | npx bunyan",
+		"stop": "pm2 stop all",
+		"delete": "pm2 delete all",
 		"dev": "nodemon -r tsconfig-paths/register src/app.ts | npx bunyan",
 		"lint:check": "eslint src/**/*.ts",
 		"lint:fix": "eslint src/**/*.ts --fix",
 		"prettier:check": "prettier --check src/**/*.{ts,json}",
 		"prettier:fix": "prettier --write src/**/*.{ts,json}",
 		"test": "jest --coverage=true -w=1 --forceExit --detectOpenHandles --watchAll=true",
-		"build": "tspc -p .",
-		"seed:dev": "npx ts-node src/seed.ts"
+		"seed:dev": "npx ts-node src/seed.ts",
+		"seed:prod": "npx ts-node ./build/src/seed.js",
+		"build": "tspc -p ."
 	},
 	"keywords": [],
 	"author": "",
@@ -85,5 +90,67 @@
 		"ts-node": "^10.9.1",
 		"ts-patch": "^3.0.2",
 		"tsconfig-paths": "^4.2.0"
+	},
+	"Resources": {
+		"Bucket": {
+			"Type": "AWS::S3::Bucket",
+			"Properties": {
+				"BucketName": {
+					"Fn::Sub": "${AWS::StackName}-bucket-${AWS::AccountId}"
+				},
+				"BucketEncryption": {
+					"ServerSideEncryptionConfiguration": [
+						{
+							"ServerSideEncryptionByDefault": {
+								"SSEAlgorithm": "aws:kms",
+								"KMSMasterKeyID": "alias/aws/s3"
+							}
+						}
+					]
+				},
+				"PublicAccessBlockConfiguration": {
+					"IgnorePublicAcls": true,
+					"RestrictPublicBuckets": true
+				}
+			}
+		},
+		"BucketBucketPolicy": {
+			"Type": "AWS::S3::BucketPolicy",
+			"Properties": {
+				"Bucket": {
+					"Ref": "Bucket"
+				},
+				"PolicyDocument": {
+					"Id": "RequireEncryptionInTransit",
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Principal": "*",
+							"Action": "*",
+							"Effect": "Deny",
+							"Resource": [
+								{
+									"Fn::GetAtt": [
+										"Bucket",
+										"Arn"
+									]
+								},
+								{
+									"Fn::Sub": "${Bucket.Arn}/*"
+								}
+							],
+							"Condition": {
+								"Bool": {
+									"aws:SecureTransport": "false"
+								}
+							}
+						}
+					]
+				}
+			}
+		},
+		"Topic": {
+			"Type": "AWS::SNS::Topic"
+		}
 	}
 }

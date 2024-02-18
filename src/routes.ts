@@ -19,7 +19,7 @@ export default (app: Application) => {
     app.use('/queues', serverAdapter.getRouter());
     app.use(BASE_PATH, authRoutes.routes());
     app.use(BASE_PATH, authRoutes.signOutRoute());
-    app.use(healthRoute.routes());
+    app.use('', healthRoute.routes());
     app.use(BASE_PATH, authMiddleware.verify, currentUserRoutes.routes());
     app.use(BASE_PATH, authMiddleware.verify, postRoutes.routes());
     app.use(BASE_PATH, authMiddleware.verify, reactionRoutes.routes());
