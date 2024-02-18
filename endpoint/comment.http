@@ -1,0 +1,41 @@
+@baseUrl=http://localhost:5000
+@urlPath=api/v1
+# Antar1
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWEyMTRkYmNhNWUyMThiMTBhZjYwODkiLCJ1SWQiOiI5Mjc5MjMwMzk2MTkiLCJlbWFpbCI6ImRldi5hbnRhcmRhczFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJBbnRhcjEiLCJhdmF0YXJDb2xvciI6ImJsYWNrIiwiaWF0IjoxNzA1MTIzNjMxfQ.P6-L38S0ckXLyrs--rXU1HSHNiLUC5NmAm-EAsqNAHc
+@postID=65a25374d72adf841693ccce
+@commentID=65a220e3fee817f2ee1faef3
+
+@userTo=65a23170197ddd2c70968177
+
+### Add Co
+POST {{baseUrl}}/{{urlPath}}/comments
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+Authorization: {{token}}
+
+{
+  "userTo": "{{userTo}}",
+  "postId": "{{postID}}",
+  "comment": "My Comment 3",
+  "profilePicture": "<cloudinary-user-profile-picture-url>"
+}
+
+### All Commentes
+GET {{baseUrl}}/{{urlPath}}/comments/{{postID}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+### All Commented User Name
+GET {{baseUrl}}/{{urlPath}}/comments/names/{{postID}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+### Single Comment
+GET {{baseUrl}}/{{urlPath}}/comments/{{postID}}/{{commentID}}
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
