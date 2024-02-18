@@ -1,5 +1,5 @@
 import HTTP_STATUS from 'http-status-codes';
-import express, { Router, Request, Response, response } from 'express';
+import express, { Router, Request, Response } from 'express';
 import moment from 'moment';
 import { performance } from 'perf_hooks';
 import { config } from '@/root/config';

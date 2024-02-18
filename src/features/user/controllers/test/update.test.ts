@@ -4,9 +4,9 @@ import { UserCache } from '@/service/redis/user.cache';
 import { postService } from '@/service/db/post.service';
 import { userService } from '@/service/db/user.service';
 import { followerService } from '@/service/db/follower.service';
-import { authMockRequest, authMockResponse, authUserPayload } from '@/root/mocks/auth.mock';
+import { authUserPayload } from '@/root/mocks/auth.mock';
 import { Request, Response } from 'express';
-import { existingUser } from '@/root/mocks/user.mock';
+import { existingUser, userMockRequest, userMockResponse } from '@/root/mocks/user.mock';
 import { mockFollowerData } from '@/root/mocks/follow.mock';
 import { Get } from '../get-profile';
 import mongoose from 'mongoose';
@@ -38,7 +38,7 @@ describe('Update', () => {
   });
   describe('password', () => {
     it('should throw an error if currentPassword is empty', () => {
-      const req: Request = authMockRequest(
+      const req: Request = userMockRequest(
         {},
         {
           currentPassword: '',
@@ -49,7 +49,7 @@ describe('Update', () => {
         {},
         {}
       ) as unknown as Request;
-      const res: Response = authMockResponse();
+      const res: Response = userMockResponse();
       Update.prototype.password(req, res).catch((error: CustomError) => {
         expect(error.statusCode).toEqual(400);
         expect(error.serializeError().message).toEqual('Password is a required field');
@@ -57,7 +57,7 @@ describe('Update', () => {
     });
 
     it('should throw an error if newPassword is empty', () => {
-      const req: Request = authMockRequest(
+      const req: Request = userMockRequest(
         {},
         {
           currentPassword: '1234567',
@@ -68,7 +68,7 @@ describe('Update', () => {
         {},
         {}
       ) as unknown as Request;
-      const res: Response = authMockResponse();
+      const res: Response = userMockResponse();
       Update.prototype.password(req, res).catch((error: CustomError) => {
         expect(error.statusCode).toEqual(400);
         expect(error.serializeError().message).toEqual('Password is a required field | Confirm password does not match new password.');
@@ -76,7 +76,7 @@ describe('Update', () => {
     });
 
     it('should throw an error if confirmPassword is empty', () => {
-      const req: Request = authMockRequest(
+      const req: Request = userMockRequest(
         {},
         {
           currentPassword: '1234567',
@@ -87,7 +87,7 @@ describe('Update', () => {
         {},
         {}
       ) as unknown as Request;
-      const res: Response = authMockResponse();
+      const res: Response = userMockResponse();
       Update.prototype.password(req, res).catch((error: CustomError) => {
         expect(error.statusCode).toEqual(400);
         expect(error.serializeError().message).toEqual('Confirm password does not match new password.');
@@ -95,7 +95,7 @@ describe('Update', () => {
     });
 
     it('should throw an error if currentPassword does not exist', () => {
-      const req: Request = authMockRequest(
+      const req: Request = userMockRequest(
         {},
         {
           currentPassword: '1234567',
@@ -106,7 +106,7 @@ describe('Update', () => {
         {},
         {}
       ) as unknown as Request;
-      const res: Response = authMockResponse();
+      const res: Response = userMockResponse();
       const mockUser: IAuthDocument = {
         ...existingUser,
         comparePassword: async () => Promise.resolve(false)
@@ -120,7 +120,7 @@ describe('Update', () => {
     });
 
     it('should send correct json response', async () => {
-      const req: Request = authMockRequest(
+      const req: Request = userMockRequest(
         {},
         {
           currentPassword: '1234567',
@@ -131,7 +131,7 @@ describe('Update', () => {
         {},
         {}
       ) as unknown as Request;
-      const res: Response = authMockResponse();
+      const res: Response = userMockResponse();
       const mockUser: IAuthDocument = {
         ...existingUser,
         comparePassword: async () => Promise.resolve(true),
@@ -159,8 +159,8 @@ describe('Update', () => {
         school: 'Taltech',
         location: 'Tallinn'
       };
-      const req: Request = authMockRequest({}, basicInfo, authUserPayload, {}, {}) as unknown as Request;
-      const res: Response = authMockResponse();
+      const req: Request = userMockRequest({}, basicInfo, authUserPayload, {}, {}) as unknown as Request;
+      const res: Response = userMockResponse();
       jest.spyOn(UserCache.prototype, 'updateSingleUserItemInCache');
       jest.spyOn(UserCache.prototype, 'updateBasicInfo');
       await Update.prototype.basicInfo(req, res);
@@ -178,8 +178,8 @@ describe('Update', () => {
         school: 'Taltech',
         location: 'Tallinn'
       };
-      const req: Request = authMockRequest({}, basicInfo, authUserPayload, {}, {}) as unknown as Request;
-      const res: Response = authMockResponse();
+      const req: Request = userMockRequest({}, basicInfo, authUserPayload, {}, {}) as unknown as Request;
+      const res: Response = userMockResponse();
       jest.spyOn(userQueue, 'addUserJob');
 
       await Update.prototype.basicInfo(req, res);
@@ -202,8 +202,8 @@ describe('Update', () => {
         youtube: 'https://youtube.com',
         twitter: 'https://twitter.com'
       };
-      const req: Request = authMockRequest({}, socialInfo, authUserPayload, {}, {}) as unknown as Request;
-      const res: Response = authMockResponse();
+      const req: Request = userMockRequest({}, socialInfo, authUserPayload, {}, {}) as unknown as Request;
+      const res: Response = userMockResponse();
       jest.spyOn(UserCache.prototype, 'updateSocialLinks');
 
       await Update.prototype.socialLinks(req, res);
@@ -221,8 +221,8 @@ describe('Update', () => {
         youtube: 'https://youtube.com',
         twitter: 'https://twitter.com'
       };
-      const req: Request = authMockRequest({}, socialInfo, authUserPayload, {}, {}) as unknown as Request;
-      const res: Response = authMockResponse();
+      const req: Request = userMockRequest({}, socialInfo, authUserPayload, {}, {}) as unknown as Request;
+      const res: Response = userMockResponse();
       jest.spyOn(userQueue, 'addUserJob');
 
       await Update.prototype.socialLinks(req, res);
@@ -245,13 +245,13 @@ describe('Update', () => {
         comments: true,
         follows: false
       };
-      const req: Request = authMockRequest({}, settings, authUserPayload, {}, {}) as unknown as Request;
-      const res: Response = authMockResponse();
+      const req: Request = userMockRequest({}, settings, authUserPayload, {}, {}) as unknown as Request;
+      const res: Response = userMockResponse();
       jest.spyOn(UserCache.prototype, 'updateNotificationSetting');
       jest.spyOn(userQueue, 'addUserJob');
 
       await Update.prototype.notificationSettings(req, res);
-      expect(UserCache.prototype.updateNotificationSetting).toHaveBeenCalledWith(`${req.currentUser?.userId}`,  settings);
+      expect(UserCache.prototype.updateNotificationSetting).toHaveBeenCalledWith(`${req.currentUser?.userId}`, settings);
       expect(userQueue.addUserJob).toHaveBeenCalledWith(UPDATE_NOTIFICATIONS_SETTINGS_TO_DB, {
         key: `${req.currentUser?.userId}`,
         value: req.body

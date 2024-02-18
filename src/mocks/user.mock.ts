@@ -1,4 +1,27 @@
+import { AuthPayload } from '@/auth/interfaces/auth.interface';
+import { IAuthMock, IJWT } from '@/root/mocks/auth.mock';
 import { IUserDocument } from '@/user/interfaces/user.interface';
+import { Response } from 'express';
+
+export interface IQuery {
+  page?: string;
+}
+export const userMockRequest = (cookieData: IJWT, body: IAuthMock, currentUser: AuthPayload | null, params: unknown, query: IQuery | unknown) => ({
+  cookies: cookieData,
+  body,
+  params,
+  currentUser,
+  query
+});
+
+export const userMockResponse = (): Response => {
+  const res: Response = {} as Response;
+  res.cookie = jest.fn().mockReturnValue(res);
+  res.clearCookie = jest.fn().mockReturnValue(res);
+  res.status = jest.fn().mockReturnValue(res);
+  res.json = jest.fn().mockReturnValue(res);
+  return res;
+};
 
 export const mockExistingUser = {
   notifications: {
