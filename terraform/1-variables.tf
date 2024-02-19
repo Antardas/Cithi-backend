@@ -13,7 +13,7 @@ variable "vpc_cidr_block" {
 variable "vpc_availability_zones" {
   description = "VPC Availability Zones"
   type        = list(string)
-  default     = ["us-east-1a","us-east-1b"]
+  default     = ["us-east-1a", "us-east-1b"]
 }
 
 variable "vpc_public_subnets" {
@@ -49,7 +49,8 @@ variable "https_ssl_policy" {
 variable "main_api_server_domain" {
   description = "Main API Server Domain"
   type        = string
-  default     = "api.chithi.localhost"
+  default     = "chithi.localhost"
+  # default     = "api.chithi.localhost"
 }
 
 variable "dev_api_server_domain" {
