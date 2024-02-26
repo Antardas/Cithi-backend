@@ -1,8 +1,8 @@
-resource "aws_alb_target_group" "sever_backend_tg" {
+resource "aws_alb_target_group" "server_backend_tg" {
   name                 = "${local.prefix}-tg"
   vpc_id               = aws_vpc.main.id
-  port                 = 5000 # API Server Port
-  protocol             = "http"
+  port                 = 5000 # API server port
+  protocol             = "HTTP"
   deregistration_delay = 60
 
   health_check {
@@ -14,17 +14,15 @@ resource "aws_alb_target_group" "sever_backend_tg" {
     interval            = 120
     timeout             = 100
     matcher             = "200"
-
   }
-
+depends_on = [ aws_vpc.main ]
   stickiness {
-    type        = "cookies"
-    cookie_name = "token"
+    type        = "app_cookie"
+    cookie_name = "session"
   }
 
-   tags = merge(local.common_tags,
+  tags = merge(
+    local.common_tags,
     tomap({ "Name" = "${local.prefix}-tg" })
   )
 }
-
-

@@ -4,8 +4,9 @@ resource "aws_route53_zone" "primary" {
     Name = "Terraform Managed Hosted Zone"
   }
 }
-# Get The Create Hosted Zone
+# Get your already created hosted zone
 data "aws_route53_zone" "main" {
-  name         = var.main_api_server_domain
+  name         = "chithi.localhost"
   private_zone = false
+  depends_on   = [aws_route53_zone.primary]
 }

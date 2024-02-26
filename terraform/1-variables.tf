@@ -19,13 +19,13 @@ variable "vpc_availability_zones" {
 variable "vpc_public_subnets" {
   description = "VPC Public Subnets"
   type        = list(string)
-  default     = ["10.0.1.0/24", "10.0.2.0/16"]
+  default     = ["10.0.1.0/24", "10.0.2.0/24"]
 }
 
 variable "vpc_private_subnets" {
   description = "VPC Private Subnets"
   type        = list(string)
-  default     = ["10.0.3.0/24", "10.0.4.0/16"]
+  default     = ["10.0.3.0/24", "10.0.4.0/24"]
 }
 
 variable "global_destination_cidr_block" {
@@ -50,7 +50,6 @@ variable "main_api_server_domain" {
   description = "Main API Server Domain"
   type        = string
   default     = "chithi.localhost"
-  # default     = "api.chithi.localhost"
 }
 
 variable "dev_api_server_domain" {
@@ -86,7 +85,7 @@ variable "elasticache_node_type" {
 variable "elasticache_parameter_group_name" {
   description = "Elasticache Parameter Group Name"
   type        = string
-  default     = "default.rdis7.x"
+  default     = "default.redis6.x"
 }
 
 variable "ec2_instance_type" {

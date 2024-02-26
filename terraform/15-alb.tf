@@ -1,16 +1,18 @@
 resource "aws_alb" "application_load_balancer" {
   name                       = "${local.prefix}-alb"
-  load_balancer_type         = "applicaiton"
   internal                   = false
+  load_balancer_type         = "application"
   subnets                    = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_b.id]
   security_groups            = [aws_security_group.alb_sg.id]
   enable_deletion_protection = false
   ip_address_type            = "ipv4"
   idle_timeout               = 300
-  tags = merge(local.common_tags,
+  tags = merge(
+    local.common_tags,
     tomap({ "Name" = "${local.prefix}-ALB" })
   )
 }
+
 
 # if any request from http it will redirect to https
 
@@ -24,7 +26,7 @@ resource "aws_alb_listener" "alb_https_listener" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.sever_backend_tg
+    target_group_arn = aws_alb_target_group.server_backend_tg.arn
   }
 }
 
@@ -47,8 +49,8 @@ resource "aws_alb_listener_rule" "alb_https_listener_rule" {
   listener_arn = aws_alb_listener.alb_http_listener.arn
   priority     = 100
   action {
-    type = "forward"
-
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.server_backend_tg.arn
   }
 
   condition {

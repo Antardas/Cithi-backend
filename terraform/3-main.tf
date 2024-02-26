@@ -1,9 +1,12 @@
 terraform {
   backend "s3" {
-    bucket  = "chithi-terraform-state"
-    key     = "develop/chithi.tfstate"
-    region  = var.aws_region
-    encrypt = true
+    bucket           = "chithi-terraform-state"
+    key              = "develop/chithi.tfstate"
+    region           = "us-east-1"
+    encrypt          = true
+    force_path_style = true
+
+    endpoint = "http://s3.localhost.localstack.cloud:4566"
   }
 }
 
@@ -17,4 +20,7 @@ locals {
     Owner       = "Chithi"
   }
 
+}
+output "name_server"  {
+  value = "${aws_acm_certificate.dev_cert.domain_validation_options}"
 }
