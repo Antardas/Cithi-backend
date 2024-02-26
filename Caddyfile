@@ -1,0 +1,13 @@
+{
+    acme_ca https://acme-v02.api.letsencrypt.org/directory
+                # acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+
+}
+
+dev.api.chithi.localhost {
+  reverse_proxy host.docker.internal:5000
+}
+
+api.chithi.localhost {
+  reverse_proxy host.docker.internal:5000
+}
