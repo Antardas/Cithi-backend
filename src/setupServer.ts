@@ -22,6 +22,7 @@ import { SocketIOFollowerHandler } from '@/socket/follower';
 import { SocketIONotificationHandler } from '@/socket/notification';
 import { SocketIOImageHandler } from '@/socket/image';
 import { SocketIOChatHandler } from '@/socket/chat';
+import { uniqueId } from 'lodash';
 
 const SERVER_PORT = 5000;
 const log: Logger = config.createLogger('server');
@@ -55,7 +56,7 @@ export class ChattyServer {
     app.use(helmet());
     app.use(
       cors({
-        origin: [config.CLIENT_URL, '*'] as string[], // TODO: make it actual origin in production
+        origin: [config.CLIENT_URL, 'http://localhost:5173', '*'] as string[], // TODO: make it actual origin in production
         credentials: true,
         optionsSuccessStatus: 200,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
