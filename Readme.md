@@ -1,3 +1,6 @@
+### Bug List
+[ ] Fix the Duplicate Date insert in when reaction Update (username, postId)
+
 ### Local stack Command
 - Create S3 bucker `awslocal s3api create-bucket --bucket chithi-terraform-state`
 - List of Bucket `awslocal s3 ls`
@@ -46,3 +49,7 @@ docker tag amazonlinux localstack-ec2/amzn2-ami-hvm-2.0.20180810-x86_64-gp2:ami-
 
 docker pull amazonlinux:latest
 Solve the EC2 not found issue https://github.com/localstack/localstack/issues/8228
+
+
+### Bug List
+1. Fix the Duplicate Date insert in when reaction Update (username, postId)

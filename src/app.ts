@@ -50,6 +50,7 @@ class Application {
     Promise.resolve()
       .then(() => {
         log.info('Shutdown Complete');
+        process.exit(2);
       })
       .catch((error: Error) => {
         log.error(`Error During shut down:: ${error}`);
