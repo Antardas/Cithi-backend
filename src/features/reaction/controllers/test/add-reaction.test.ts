@@ -32,7 +32,7 @@ describe('AddReaction', () => {
           wow: 0,
           sad: 0,
           angry: 0,
-          haha: 0
+          happy: 0
         }
       },
       authUserPayload
@@ -64,7 +64,7 @@ describe('AddReaction', () => {
           wow: 0,
           sad: 0,
           angry: 0,
-          haha: 0
+          happy: 0
         }
       },
       authUserPayload
@@ -97,7 +97,7 @@ describe('AddReaction', () => {
           wow: 0,
           sad: 0,
           angry: 0,
-          haha: 0
+          happy: 0
         }
       },
       authUserPayload
