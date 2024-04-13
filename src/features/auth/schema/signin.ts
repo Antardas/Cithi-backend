@@ -13,7 +13,7 @@ const signInSchema: ObjectSchema = Joi.object().keys({
     'string.max': 'Invalid password',
     'string.empty': 'Password is a required field'
   }),
-  keepLoggedIn: Joi.boolean().required().default(false)
+  // keepLoggedIn: Joi.boolean().required().default(false)
 });
 
 export { signInSchema };

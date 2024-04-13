@@ -22,7 +22,7 @@ export class SocketIoUserHandler {
       });
 
       socket.on('SETUP', (data: ILogin) => {
-        this.addClientToMap(data.userId, socket.id);
+        this.addClientToMap(data.userId, socket.id); // TODO: instead of userId we will send the username -> rename it
         this.addUser(data.userId);
         this.io.emit('USER_ONLINE', users);
       });

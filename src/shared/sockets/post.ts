@@ -15,11 +15,11 @@ export class SocketIOPostHandler {
     this.io.on('connection', (socket: Socket) => {
       console.log('Post Socket IO handler');
 
-      socket.on('reaction', (reaction: IReactionDocument) => {
+      socket.on('reaction', (reaction: IReactionDocument) => { // TODO: fix the Type
         this.io.emit('update like', reaction);
       });
 
-      socket.on('comment', (comment: ICommentDocument) => {
+      socket.on('comment', (comment: ICommentDocument) => { // TODO: fix the Type
         this.io.emit('update comment', comment);
       });
     });

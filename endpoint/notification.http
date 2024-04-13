@@ -2,7 +2,7 @@
 @urlPath=api/v1
 # Antar1
 @token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWEyMzE3MDE5N2RkZDJjNzA5NjgxNzciLCJ1SWQiOiIyMzU0MjM0MDM3NTAiLCJlbWFpbCI6ImRldi5hbnRhcmRhc0BnbWFpbC5jb20iLCJ1c2VybmFtZSI6IkFudGFyIiwiYXZhdGFyQ29sb3IiOiJibGFjayIsImlhdCI6MTcwNjQzMjM5M30.X57z1x8aMMGmypzXlnLruxVV_wxMjXnYZ3Dw0ZCZH0U
-@notificationId=65b5aefee30dab82576e0034
+@notificationId=65b5afa3467276a08167081b
 @userTo=65a23170197ddd2c70968177
 
 ### Mark as Read
@@ -14,7 +14,7 @@ Authorization: {{token}}
 
 {
 }
-### Get ALl Notification 
+### Get ALl Notification
 GET {{baseUrl}}/{{urlPath}}/notifications
 Content-Type: application/json
 Accept: application/json
