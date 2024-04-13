@@ -30,7 +30,7 @@ export class ReactionCache extends BaseCache {
       await this.createConnection();
 
       if (previousReaction) {
-        this.removePostReaction(key, reaction.username, postReactions);
+        await this.removePostReaction(key, reaction.username, postReactions);
       }
 
       if (type) {
