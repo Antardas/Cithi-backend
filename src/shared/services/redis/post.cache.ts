@@ -335,7 +335,7 @@ export class PostCache extends BaseCache {
       console.timeEnd('Update Post With Image');
 
       const multi: ReturnType<typeof this.client.multi> = this.client.multi();
-      multi.HGETALL(`post:${key}`);
+      multi.HGETALL(`posts:${key}`);
       const reply: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
       const post = reply as IPostDocument[];
       post[0].commentCount = Helpers.parseJson(`${post[0].commentCount}`) as number;
