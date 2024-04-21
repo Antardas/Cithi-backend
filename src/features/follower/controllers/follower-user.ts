@@ -23,7 +23,7 @@ export class Add {
     const cachedFollowing: Promise<IUserDocument> = userCache.getUserFromCache(followeeId) as Promise<IUserDocument>;
     const cachedFollower: Promise<IUserDocument> = userCache.getUserFromCache(`${req.currentUser?.userId}`) as Promise<IUserDocument>;
 
-    const response: [IUserDocument, IUserDocument] = await Promise.all([cachedFollower, cachedFollowing]);
+    const response: [IUserDocument, IUserDocument] = await Promise.all([cachedFollowing,cachedFollower]);
 
     const followerObjectId: ObjectId = new ObjectId();
     const addFolloweeData: IFollowerData = Add.prototype.userData(response[0]);
