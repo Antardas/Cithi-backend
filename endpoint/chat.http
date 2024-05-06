@@ -14,9 +14,9 @@ withCredentials: true
 Authorization: {{token}}
 
 {
-  "conversationId": "65bc9d8772ca4ba50e3c5580",
-  "receiverId": "65a23170197ddd2c70968177",
-  "receiverUsername": "Antar",
+  "conversationId": "",
+  "receiverId": "65d0fc346ad1b8353c47609d",
+  "receiverUsername": "Henri80",
   "receiverAvatarColor": "black",
   "receiverProfilePicture": "https://res.cloudinary.com/dyn3w0n6w/image/upload/v1706506175/65a23170197ddd2c70968177",
   "body": "How's going",
@@ -33,8 +33,8 @@ withCredentials: true
 Authorization: {{token}}
 
 {
-  "sender": "65a76f00e3260b4f2d15ed27",
-  "receiver": "65a23170197ddd2c70968177"
+  "sender": "65ee9da201ae5bfd95c84c2e",
+  "receiver": "65d0fc346ad1b8353c47609d"
 }
 
 ### Delete Chat Useer
@@ -104,7 +104,7 @@ Authorization: {{token}}
 }
 
 
-### Add Message Reaction  
+### Add Message Reaction
 PUT {{baseUrl}}/{{urlPath}}/chat/message/reaction
 Content-Type: application/json
 Accept: application/json

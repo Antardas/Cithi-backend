@@ -11,3 +11,6 @@ dev.api.chithi.localhost {
 api.chithi.localhost {
   reverse_proxy host.docker.internal:5000
 }
+chithi.localhost {
+  reverse_proxy host.docker.internal:5173
+}
