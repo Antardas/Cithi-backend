@@ -18,8 +18,8 @@ class ImageWorker {
 
   async updateBgImageInDB(job: Job, done: DoneCallback): Promise<void> {
     try {
-      const { key, imgId, imgVersion } = job.data;
-      await imageService.addBackgroundImageToDB(key, imgId, imgVersion);
+      const { key, imgId, imgVersion, isNew } = job.data;
+      await imageService.addBackgroundImageToDB(key, imgId, imgVersion, isNew);
       job.progress(100);
       done(null, job.data);
     } catch (error) {
