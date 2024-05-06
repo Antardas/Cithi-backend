@@ -17,7 +17,7 @@ class FollowerRoutes {
     this.router.put('/users/unfollow/:followeeId', authMiddleware.checkAuthentication, Remove.prototype.follower);
     this.router.put('/users/block/:id', authMiddleware.checkAuthentication, AddUser.prototype.block);
     this.router.put('/users/unblock/:id', authMiddleware.checkAuthentication, AddUser.prototype.unblock);
-    this.router.get('/users/followers', authMiddleware.checkAuthentication, Get.prototype.followers);
+    this.router.get('/users/followers/:id', authMiddleware.checkAuthentication, Get.prototype.followers);
     this.router.get('/users/followings', authMiddleware.checkAuthentication, Get.prototype.followings);
     return this.router;
   }
