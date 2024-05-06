@@ -16,6 +16,7 @@ const postSchema: Schema = new Schema({
   videoId: { type: String, default: '' },
   feelings: { type: String, default: '' },
   gifUrl: { type: String, default: '' },
+  privacy: { type: String, default: '' },
   commentsCount: { type: Number, default: 0 },
   reactions: {
     like: { type: Number, default: 0 },
@@ -25,7 +26,7 @@ const postSchema: Schema = new Schema({
     sad: { type: Number, default: 0 },
     angry: { type: Number, default: 0 }
   },
-  createdAt: { type: Date, default: Date.now}
+  createdAt: { type: Date, default: Date.now }
 });
 
 const PostModel: Model<IPostDocument> = model<IPostDocument>('Post', postSchema);
