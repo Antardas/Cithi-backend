@@ -87,14 +87,14 @@ export class PostCache extends BaseCache {
       bgColor: `${bgColor}`,
       feelings: `${feelings}`,
       privacy: `${privacy}`,
-      gifUrl: `${gifUrl}`,
+      gifUrl: `${gifUrl ?? ''}`,
       commentCount: `${commentCount}`,
       reactions: `${JSON.stringify(reactions)}`,
-      imgVersion: `${imgVersion}`,
-      imgId: `${imgId}`,
+      imgVersion: `${imgVersion ?? ''}`,
+      imgId: `${imgId ?? ''}`,
       createAt: `${createAt}`,
-      videoId: `${videoId}`,
-      videoVersion: `${videoVersion}`
+      videoId: `${videoId ?? ''}`,
+      videoVersion: `${videoVersion ?? ''}`
     };
     try {
       if (!this.client.isOpen) {
@@ -104,7 +104,7 @@ export class PostCache extends BaseCache {
       const postCount: string[] = await this.client.HMGET(`users:${currentUserId}`, 'postsCount');
       const multi: ReturnType<typeof this.client.multi> = this.client.multi();
       multi.ZADD('post', {
-        score: parseInt(uId, 10),
+        score: new Date().getTime(), //parseInt(uId, 10),
         value: `${key}`
       });
 
@@ -214,7 +214,7 @@ export class PostCache extends BaseCache {
       const postWithVideoReplies: IPostDocument[] = [];
 
       for (const post of replies as IPostDocument[]) {
-        if ((post.videoId && post.videoVersion)) {
+        if (post.videoId && post.videoVersion) {
           post.commentCount = Helpers.parseJson(`${post.commentCount}`) as number;
           post.reactions = Helpers.parseJson(`${post.reactions}`) as IReactions;
           post.createAt = new Date(Helpers.parseJson(`${post.createAt}`));
@@ -291,7 +291,7 @@ export class PostCache extends BaseCache {
   }
 
   public async updatePostInCache(key: string, updatedPost: IPostDocument): Promise<IPostDocument> {
-    const { post, bgColor, feelings, privacy, gifUrl, imgId, imgVersion, profilePicture, videoId,videoVersion } = updatedPost;
+    const { post, bgColor, feelings, privacy, gifUrl, imgId, imgVersion, profilePicture, videoId, videoVersion } = updatedPost;
 
     const firstList: string[] = [
       'post',

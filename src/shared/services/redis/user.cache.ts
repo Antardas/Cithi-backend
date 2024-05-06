@@ -110,6 +110,7 @@ export class UserCache extends BaseCache {
       response.followingCount = Helpers.parseJson(`${response.followingCount}`);
       response.bgImageId = Helpers.parseJson(`${response.bgImageId}`);
       response.bgImageVersion = Helpers.parseJson(`${response.bgImageVersion}`);
+      response.profilePicture = Helpers.parseJson(`${response.profilePicture}`);
       return response;
     } catch (error) {
       log.error(error);
