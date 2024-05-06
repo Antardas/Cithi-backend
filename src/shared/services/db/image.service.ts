@@ -13,15 +13,16 @@ class ImageService {
 
     await this.addImage(userId, imgId, imgVersion, 'profile');
   }
-  async addBackgroundImageToDB(userId: string, imgId: string, imgVersion: string): Promise<void> {
+  async addBackgroundImageToDB(userId: string, imgId: string, imgVersion: string, isNew: boolean): Promise<void> {
     await UserModel.findByIdAndUpdate(userId, {
       $set: {
         bgImageId: imgId,
         bgImageVersion: imgVersion
       }
     });
-
-    await this.addImage(userId, imgId, imgVersion, 'background');
+    if (isNew) {
+      await this.addImage(userId, imgId, imgVersion, 'background');
+    }
   }
 
   async addImage(userId: string, imgId: string, imgVersion: string, type: string): Promise<void> {
