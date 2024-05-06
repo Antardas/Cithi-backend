@@ -40,7 +40,7 @@ export class Add {
 
   @joiValidation(addImageSchema)
   public async backgroundImage(req: Request, res: Response): Promise<void> {
-    const { version, publicId }: IBgUploadResponse = await Add.prototype.backgroundUpload(req.body.image);
+    const { version, publicId, isNew }: IBgUploadResponse = await Add.prototype.backgroundUpload(req.body.image);
     const bgImageIdCacheUser: Promise<IUserDocument | null> = userCache.updateSingleUserItemInCache(
       `${req.currentUser?.userId}`,
       'bgImageId',
@@ -62,7 +62,8 @@ export class Add {
     imageQueue.addImageJob(UPDATE_BACKGROUND_IMAGE_IN_BD, {
       key: req.currentUser?.userId,
       imgId: publicId,
-      imgVersion: version.toString()
+      imgVersion: version.toString(),
+      isNew
     });
 
     res.status(HTTP_STATUS.OK).json({
@@ -90,7 +91,8 @@ export class Add {
 
     return {
       publicId,
-      version
+      version,
+      isNew: isDataUrl
     };
   }
 }

@@ -16,10 +16,12 @@ export interface IFileImageJobData {
   imgVersion?: string;
   userId?: string;
   imageId?: string;
+  isNew?: boolean;
 }
 
 export interface IBgUploadResponse {
   version: string;
   publicId: string;
   public_id?: string;
+  isNew?: boolean;
 }
