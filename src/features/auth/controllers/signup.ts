@@ -30,7 +30,8 @@ export class SignUp {
 
     const authObjectId: ObjectId = new ObjectId();
     const userObjectId: ObjectId = new ObjectId();
-    const uId: string = `${Helpers.generateRandomIntegers(12)}`;
+    // const uId: string = `${Helpers.generateRandomIntegers(12)}`;
+    const uId: string = `${new Date().getTime()}`;
     const authData: IAuthDocument = SignUp.prototype.signupData({
       username,
       _id: authObjectId,

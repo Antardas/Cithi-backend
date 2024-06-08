@@ -26,14 +26,11 @@ const postWithImageSchema: ObjectSchema = Joi.object().keys({
 });
 const postWithVideoSchema: ObjectSchema = Joi.object().keys({
   ...commonProperties,
-  image: Joi.string().optional().messages({
+  video: Joi.string().required().messages({
     'any.required': 'video is a required field',
     'any.empty': 'video property is not allowed to be empty'
   }),
-  video: Joi.string().required().messages({
-    'any.required': 'image is a required field',
-    'any.empty': 'image property is not allowed to be empty'
-  })
+  // image: Joi.string().optional()
 });
 
 export { postSchema, postWithImageSchema,postWithVideoSchema };

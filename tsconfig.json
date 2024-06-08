@@ -45,5 +45,6 @@
       "@/root/*": ["src/*"] // always in last
     }
   },
-  "exclude": ["./jest.config.ts"]
+  "exclude": ["./jest.config.ts"],
+  "include": ["src/**/*", "src/**/*.ejs"]
 }

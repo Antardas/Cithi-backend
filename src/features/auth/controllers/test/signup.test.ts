@@ -68,7 +68,7 @@ describe('SignUp', () => {
 
     SignUp.prototype.create(req, res, next).catch((error: CustomError) => {
       expect(error.statusCode).toEqual(400);
-      expect(error.serializeError().message).toEqual('Invalid username');
+      expect(error.serializeError().message).toEqual('Invalid username max 8 character');
     });
   });
   it('should throw an error if username do not have minimum length', () => {
@@ -91,7 +91,7 @@ describe('SignUp', () => {
 
     SignUp.prototype.create(req, res, next).catch((error: CustomError) => {
       expect(error.statusCode).toEqual(400);
-      expect(error.serializeError().message).toEqual('Invalid username');
+      expect(error.serializeError().message).toEqual('Invalid username min 4 character');
     });
   });
   it('should throw an error if email did not provide', () => {
