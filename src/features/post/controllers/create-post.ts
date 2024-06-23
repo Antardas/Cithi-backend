@@ -117,7 +117,7 @@ export class Create {
     // TODO: call image queue to add mongoDB
     imageQueue.addImageJob(ADD_IMAGE_TO_DB, {
       key: req.currentUser?.userId,
-      imageId: result.public_id,
+      imgId: result.public_id,
       imgVersion: result.version.toString()
     });
 
