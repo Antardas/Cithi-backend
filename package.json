@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "pm2-runtime start ./ecosystem.config.js | npx bunyan",
-    "start:dev": "SET NODE_ENV=production pm2 start ./src/app.ts -i 5 --watch | npx bunyan",
+    "start": "node ./build/app.js | npx bunyan",
+    "start:dev": "pm2 start ./ecosystem.config.js | npx bunyan",
     "stop": "pm2 stop all",
     "delete": "pm2 delete all",
     "dev": "nodemon -r tsconfig-paths/register src/app.ts | npx bunyan",
