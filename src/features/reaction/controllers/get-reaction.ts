@@ -39,7 +39,7 @@ export class Get {
 
     res.status(HTTP_STATUS.OK).json({
       message: 'Single post reaction by username',
-      reactions: reactions.length ? reactions[0] : {},
+      reactions: reactions.length && reactions[0] ? reactions[0] : {},
       count: reactions.length ? reactions[1] : 0
     });
   }
