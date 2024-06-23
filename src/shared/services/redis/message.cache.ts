@@ -210,6 +210,8 @@ export class MessageCache extends BaseCache {
         message.reaction = reactions;
         await this.client.LSET(`messages:${conversationId}`, messageIndex, JSON.stringify(message));
       }
+      return message;
+
     }
 
 
