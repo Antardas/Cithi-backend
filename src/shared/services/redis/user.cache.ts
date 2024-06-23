@@ -100,17 +100,22 @@ export class UserCache extends BaseCache {
 
       const response: IUserDocument = (await this.client.HGETALL(`users:${userId}`)) as unknown as IUserDocument;
 
-      response.createdAt = new Date(Helpers.parseJson(`${response.createdAt}`));
-      response.postsCount = Helpers.parseJson(`${response.postsCount}`);
-      response.blocked = Helpers.parseJson(`${response.blocked}`);
-      response.blockedBy = Helpers.parseJson(`${response.blockedBy}`);
-      response.notifications = Helpers.parseJson(`${response.notifications}`);
-      response.social = Helpers.parseJson(String(response.social));
-      response.followersCount = Helpers.parseJson(`${response.followersCount}`);
-      response.followingCount = Helpers.parseJson(`${response.followingCount}`);
-      response.bgImageId = Helpers.parseJson(`${response.bgImageId}`);
-      response.bgImageVersion = Helpers.parseJson(`${response.bgImageVersion}`);
-      response.profilePicture = Helpers.parseJson(`${response.profilePicture}`);
+      console.log('🚀 ~ UserCache ~ getUserFromCache ~ response:', response);
+      if (!Object.keys(response).length) {
+        return null;
+      }
+
+      response.createdAt = response?.createdAt ? new Date(Helpers.parseJson(`${response.createdAt}`)) : undefined;
+      response.postsCount = response.postsCount ? Helpers.parseJson(`${response.postsCount}`) : null;
+      response.blocked = response.blocked ? Helpers.parseJson(`${response.blocked ?? []}`) : null;
+      response.blockedBy = response.blockedBy ? Helpers.parseJson(`${response.blockedBy ?? []}`) : null;
+      response.notifications = response.notifications ? Helpers.parseJson(`${response.notifications}`) : null;
+      response.social = response.social ? Helpers.parseJson(String(response.social)) : null;
+      response.followersCount = response.followersCount ? Helpers.parseJson(`${response.followersCount}`) : null;
+      response.followingCount = response.followingCount ? Helpers.parseJson(`${response.followingCount}`) : null;
+      response.bgImageId = response.bgImageId ? Helpers.parseJson(`${response.bgImageId}`) : null;
+      response.bgImageVersion = response.bgImageVersion ? Helpers.parseJson(`${response.bgImageVersion}`) : null;
+      response.profilePicture = response.profilePicture ? Helpers.parseJson(`${response.profilePicture}`) : null;
       return response;
     } catch (error) {
       log.error(error);
