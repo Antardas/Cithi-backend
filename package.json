@@ -53,6 +53,7 @@
     "moment": "^2.29.4",
     "mongoose": "^7.4.1",
     "nodemailer": "^6.9.4",
+    "pm2": "^5.4.1",
     "redis": "^4.6.7",
     "socket.io": "^4.7.1",
     "swagger-stats": "^0.99.7",
