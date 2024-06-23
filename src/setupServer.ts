@@ -24,7 +24,7 @@ import { SocketIOImageHandler } from '@/socket/image';
 import { SocketIOChatHandler } from '@/socket/chat';
 import { uniqueId } from 'lodash';
 
-const SERVER_PORT = 5000;
+const SERVER_PORT = process.env.PORT || 5000;
 const log: Logger = config.createLogger('server');
 export class ChattyServer {
   private app: Application;
