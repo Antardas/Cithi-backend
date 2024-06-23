@@ -4,8 +4,8 @@ module.exports = {
     script: './build/app.js',
     env: {
       NODE_ENV: 'production',
-      PORT: 5000
+      PORT: process.env.PORT
     },
-    instances: 5, watch: true, ignore_watch: ['./storage/*', '.git/*'], attach: true
+    instances: 2, watch: true, ignore_watch: ['./storage/*', '.git/*'], attach: true
   }]
 };
