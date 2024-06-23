@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "pm2 start ./ecosystem.config.js | npx bunyan",
+    "start": "node ./build/app.js | npx bunyan",
     "start:dev": "SET NODE_ENV=production pm2 start ./src/app.ts -i 5 --watch | npx bunyan",
     "stop": "pm2 stop all",
     "delete": "pm2 delete all",
