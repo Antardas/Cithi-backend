@@ -14,7 +14,7 @@ export class CurrentUser {
 
     const existingUser: IUserDocument = cachedUser ? cachedUser : await userService.getUserById(`${req.currentUser!.userId}`);
 
-    if (Object.keys(existingUser).length) {
+    if (existingUser && Object.keys(existingUser).length) {
       isUser = true;
       token = req.cookies?.token;
       user = existingUser;
