@@ -5,6 +5,7 @@ import { faker } from '@faker-js/faker';
 import { floor, random } from 'lodash';
 import axios from 'axios';
 import { Canvas, CanvasRenderingContext2D, createCanvas } from 'canvas';
+import readline from 'node:readline'; 
 dotenv.config({});
 
 function avatarColor(): string {
@@ -110,4 +111,15 @@ async function seedUserData(count: number = 10): Promise<void> {
   }
 }
 
-seedUserData(100);
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+rl.question('How Many User You want to add ? \n', (num) => {
+  if (isNaN(Number(num))) {
+    console.log('Please enter a number');
+    return;
+  }
+  seedUserData(Number(num));
+  rl.close();
+});
