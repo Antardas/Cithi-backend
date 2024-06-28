@@ -47,10 +47,8 @@ export class ReactionCache extends BaseCache {
     try {
       await this.createConnection();
       const response: string[] = await this.client.LRANGE(`${REACTION_kEY_PREFIX}:${key}`, 0, -1);
-      const multi: ReturnType<typeof this.client.multi> = this.client.multi();
       const userPreviousReaction: IReactionDocument = this.getPreviousReaction(response, username) as IReactionDocument;
-      multi.LREM(`${REACTION_kEY_PREFIX}:${key}`, 1, JSON.stringify(userPreviousReaction));
-      await multi.exec();
+      await this.client.LREM(`${REACTION_kEY_PREFIX}:${key}`, 1, JSON.stringify(userPreviousReaction));
       await this.client.HSET(`posts:${key}`, 'reactions', JSON.stringify(reaction));
     } catch (error) {
       log.error(error);
