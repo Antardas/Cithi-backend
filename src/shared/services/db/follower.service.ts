@@ -154,18 +154,18 @@ class FollowerService {
       {
         $lookup: {
           from: 'User',
-          localField: 'followeeId', // LocalField show suggestion all type of object ID
+          localField: 'followerId', // LocalField show suggestion all type of object ID
           foreignField: '_id',
-          as: 'followeeId' // FIXME : followeeId to followee
+          as: 'follower' // FIXME : follower to followee
         }
       },
       {
-        $unwind: '$followeeId'
+        $unwind: '$follower'
       },
       {
         $lookup: {
           from: 'Auth',
-          localField: 'followeeId.authId',
+          localField: 'follower.authId',
           foreignField: '_id',
           as: 'authId'
         }
@@ -173,21 +173,21 @@ class FollowerService {
       { $unwind: '$authId' },
       {
         $addFields: {
-          _id: '$followeeId._id',
+          _id: '$follower._id',
           username: '$authId.username',
           avatarColor: '$authId.avatarColor',
-          followersCount: '$followeeId.followersCount',
-          followingCount: '$followeeId.followingCount',
-          profilePicture: '$followeeId.profilePicture',
-          postCount: '$followeeId.postCount',
-          uId: '$followeeId.uId',
-          userProfile: '$followeeId'
+          followersCount: '$follower.followersCount',
+          followingCount: '$follower.followingCount',
+          profilePicture: '$follower.profilePicture',
+          postCount: '$follower.postCount',
+          uId: '$follower.uId',
+          userProfile: '$follower'
         }
       },
       {
         $project: {
           authId: 0,
-          followeeId: 0,
+          follower: 0,
           followerId: 0,
           createdAt: 0,
           __v: 0
