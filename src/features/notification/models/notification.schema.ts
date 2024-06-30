@@ -14,7 +14,7 @@ const notificationSchema: Schema = new Schema({
   reaction: { type: String, default: '' },
   post: { type: String, default: '' },
   imgId: { type: String, default: '' },
-  imageVersion: { type: String, default: '' },
+  imgVersion: { type: String, default: '' },
   gifUrl: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now() }
 });
