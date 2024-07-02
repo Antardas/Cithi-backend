@@ -23,6 +23,7 @@ import { SocketIONotificationHandler } from '@/socket/notification';
 import { SocketIOImageHandler } from '@/socket/image';
 import { SocketIOChatHandler } from '@/socket/chat';
 import { uniqueId } from 'lodash';
+import { serverAliveCron } from '@/global/helpers/server-alive-cron';
 
 const SERVER_PORT = process.env.PORT || 5000;
 const log: Logger = config.createLogger('server');
@@ -156,6 +157,7 @@ export class ChattyServer {
 
     httpServer.listen(SERVER_PORT, () => {
       log.info(`Server Running on port: ${SERVER_PORT}`);
+      serverAliveCron();
     });
   }
 
