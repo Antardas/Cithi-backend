@@ -7,7 +7,7 @@ function serverAliveCron() {
   logger.info('Logger Has Started');
 
   if (JSON.parse(config.SERVER_ALIVE_CORN) && config.USER_TOKEN) {
-    cron.schedule('*/15 * * * *', async () => {
+    cron.schedule('*/14 * * * *', async () => {
       try {
         const response = await axios.get('https://cithi-backend.onrender.com/api/v1/users/suggestions', {
           headers: {
