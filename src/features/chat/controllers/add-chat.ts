@@ -135,22 +135,23 @@ export class Add {
   }
 
   private async messageNotification({ currentUser, message, receiverName, receiverId }: IMessageNotification): Promise<void> {
-    let sender: IUserDocument | null = await userCache.getUserFromCache(receiverId);
-    if (!sender) {
-      sender = await userService.getUserById(receiverId);
+    let receiver: IUserDocument | null = await userCache.getUserFromCache(receiverId);
+    if (!receiver) {
+      receiver = await userService.getUserById(receiverId);
     }
 
-    if (sender.notifications.messages) {
+    if (receiver.notifications.messages && receiver.email) {
       const templateParams: INotificationTemplate = {
         username: receiverName,
         message,
         header: `Message notification from ${currentUser.username}`
       };
       const template: string = notificationTemplate.notificationMessageTemplate(templateParams);
+
       emailQueue.addEmailJob(RECEIVED_MESSAGE_EMAIL, {
         template,
         subject: `You've received message from ${currentUser.username}`,
-        receiverEmail: currentUser.email
+        receiverEmail: receiver.email
       });
     }
   }
