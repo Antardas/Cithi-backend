@@ -67,6 +67,10 @@ export class Add {
     });
 
     res.status(HTTP_STATUS.OK).json({
+      data: {
+        bgImageId: publicId,
+        bgImageVersion: version
+      },
       message: 'Update the user profile'
     });
   }
