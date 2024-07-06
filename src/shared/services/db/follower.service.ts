@@ -76,7 +76,7 @@ class FollowerService {
         userFrom: followerId,
         userTo: followeeId,
         message: `${username}  now following you.`,
-        notificationType: 'comment',
+        notificationType: 'follows',
         entityId: new mongoose.Types.ObjectId(followerId),
         createdItemId: new mongoose.Types.ObjectId(followerDoc._id),
         createdAt: new Date(),
@@ -87,6 +87,8 @@ class FollowerService {
         gifUrl: '',
         reaction: ''
       });
+      console.log(notifications);
+
 
       socketIONotificationObject.emit('INSERT_NOTIFICATION', notifications, { userTo: followeeId });
       const templateParams: INotificationTemplate = {
