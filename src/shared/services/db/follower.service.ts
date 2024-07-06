@@ -87,7 +87,6 @@ class FollowerService {
         gifUrl: '',
         reaction: ''
       });
-      console.log(notifications);
 
 
       socketIONotificationObject.emit('INSERT_NOTIFICATION', notifications, { userTo: followeeId });
