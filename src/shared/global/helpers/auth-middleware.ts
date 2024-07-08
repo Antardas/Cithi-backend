@@ -7,7 +7,6 @@ class AuthMiddleware {
   public verify(req: Request, _res: Response, next: NextFunction): void {
     let { token } = req.cookies;
     token = token ?? req.headers.authorization;
-    console.log(req.headers.authorization);
     try {
       const payload: AuthPayload = JWT.verify(token, config.JWT_TOKEN!) as AuthPayload;
 
