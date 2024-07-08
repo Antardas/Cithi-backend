@@ -5,7 +5,7 @@ export class CookieHandler {
   private static getDefaultOptions(): CookieOptions {
     const defaultOptions: CookieOptions = {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: false,
       expires: new Date(Date.now() + 1 * 60 * 60 * 1000) // Default expiration time (1 hour)
     };
