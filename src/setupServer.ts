@@ -55,14 +55,35 @@ export class ChattyServer {
     // NOTE: know the use case
     app.use(hpp());
     app.use(helmet());
-    app.use(
-      cors({
-        origin: [config.CLIENT_URL, '*'] as string[], // TODO: make it actual origin in production
+
+    /*       cors({
+            origin: [config.CLIENT_URL, 'http://locahost:5173', 'http://locahost:4173'] as string[], // TODO: make it actual origin in production
+            credentials: true,
+            optionsSuccessStatus: 200,
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Authorization']
+          }), */
+    const allowlist = [config.CLIENT_URL, 'http://localhost:5173', 'http://localhost:4173'];
+
+    const corsOptionsDelegate = (req: Request, callback: (err: Error | null, options?: cors.CorsOptions) => void) => {
+      const corsOptions: cors.CorsOptions = {
+        origin: false,
         credentials: true,
         optionsSuccessStatus: 200,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-      })
-    );
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Content-Length', 'Authorization', 'Accept', 'X-Requested-With']
+      };
+
+      if (allowlist.indexOf(req.header('Origin') as string) !== -1) {
+        corsOptions.origin = true; // Reflect (enable) the requested origin in the CORS response
+      } else {
+        corsOptions.origin = false; // Disable CORS for this request
+      }
+
+      callback(null, corsOptions); // Callback expects two parameters: error and options
+    };
+
+    app.use(cors(corsOptionsDelegate));
   }
 
   private standardMiddleware(app: Application): void {
