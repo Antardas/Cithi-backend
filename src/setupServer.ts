@@ -178,7 +178,7 @@ export class ChattyServer {
 
     httpServer.listen(SERVER_PORT, () => {
       log.info(`Server Running on port: ${SERVER_PORT}`);
-      serverAliveCron();
+      // serverAliveCron();
     });
   }
 
