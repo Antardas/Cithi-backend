@@ -27,7 +27,7 @@ Chithi is a social media application designed to provide a smooth and engaging u
 ## Technology Stack
 |||||
 |:-:|:-:|:-:|:-:|
-| ![Typescript](./tech-logo/ts.png) |  ![React](./tech-logo/react.png) | ![Sass](./tech-logo/sass.png)| ![axios](./tech-logo/axios.png)|
+| ![Typescript](./tech-logo/ts.png) |  ![Node.js](./tech-logo/react.png) | ![Sass](./tech-logo/sass.png)| ![axios](./tech-logo/axios.png)|
 | ![Vitest](./tech-logo/vitest.png)|![React Testing Libray](./tech-logo/rtl.png) | ![Redux Toolkit](./tech-logo/redux.jpg) | ![MSW](./tech-logo/msw.jpeg) |
 | ![Socket.io](./tech-logo/socket-io.png)
 1. Typescript
